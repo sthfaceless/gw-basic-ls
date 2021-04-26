@@ -53,3 +53,11 @@ dkms.conf
 
 cmake-build-debug/**
 .idea/**
+**/node_modules/**
+.vscode/**
+.eslintignore
+.vscodeignore
+.eslintrc.js
+
+**/out/**
+

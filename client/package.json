@@ -1,0 +1,21 @@
+{
+	"name": "gw-basic-client",
+	"description": "VS Code part of gw-basic language server",
+	"author": "sthfaceless",
+	"license": "MIT",
+	"version": "0.0.1",
+	"publisher": "vscode",
+	"engines": {
+		"vscode": "^1.52.0"
+	},
+	"dependencies": {
+		"vscode-languageclient": "^7.0.0"
+	},
+	"activationEvents": [
+		"*"
+	],
+	"devDependencies": {
+		"@types/vscode": "^1.52.0",
+		"vscode-test": "^1.3.0"
+	}
+}
