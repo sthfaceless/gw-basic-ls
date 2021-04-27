@@ -8,27 +8,35 @@
 #include "message.h"
 #include "language_server.h"
 
-#define LOG_FILE_PATH "/home/danil/tmp/log.txt"
+#define LOG_FILE_PATH "/home/danil/CLionProjects/gw_basic_server/sandbox/log.txt"
 
 extern logger* Logger;
 
+struct node{
+    int key, val;
+};
+
 int main(int argc, char * argv[]) {
 
+
     initialize_logger(LOG_FILE_PATH);
-    char * c_buff = malloc(sizeof(char)*2);
-
     message * msg = create_message();
-
     language_server *ls = create_language_server();
+
+    FILE *fptr = fopen("/home/danil/CLionProjects/gw_basic_server/sandbox/log2.txt", "a");
 
     while (1){
 
-        char c = getchar();
+        int c = getchar();
+
         if(c >= 0){
+
+            fprintf(fptr, "%c", c);
+            fflush(fptr);
+
             msg->add_char(msg, c);
 
             if(msg->is_finished(msg)){
-                Logger->log(log_info, msg->get_message(msg));
                 if(!ls->process(ls, msg->get_message(msg), msg->size))
                     break;
                 msg->clear_message(msg);
@@ -37,10 +45,11 @@ int main(int argc, char * argv[]) {
 
     }
 
+    fclose(fptr);
+
     free_language_server(ls);
     free_message(msg);
     free_logger();
-    free(c_buff);
 
     return 0;
 }

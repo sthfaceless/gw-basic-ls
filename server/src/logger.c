@@ -14,6 +14,12 @@ void _log(const log_type type, const char *str) {
         case log_error:
             fprintf(fptr, "[Error]: %s\r\n", str);
             break;
+        case log_request:
+            fprintf(fptr, "[Request]: %s\r\n", str);
+            break;
+        case log_response:
+            fprintf(fptr, "[Response]: %s\r\n", str);
+            break;
         default:
             break;
     }

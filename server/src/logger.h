@@ -12,7 +12,9 @@ typedef struct logger logger;
 
 typedef enum {
     log_info,
-    log_error
+    log_error,
+    log_response,
+    log_request
 } log_type;
 
 struct logger {

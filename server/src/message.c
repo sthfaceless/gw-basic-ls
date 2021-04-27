@@ -2,6 +2,9 @@
 // Created by danil on 25.04.2021.
 //
 
+int debug_size_remove = 4;
+char * debug_end_line = "\r\n\r\n";
+
 
 #include "message.h"
 
@@ -10,7 +13,11 @@ const char *_get_message(const message *self) {
 }
 
 void process_header(message *self) {
-    if (self->size > 4 && strcmp(self->str + self->size - 4, "\r\n\r\n") == 0) {
+#ifdef MY_DEBUG
+    debug_size_remove = 2;
+    debug_end_line = "\n\n";
+#endif
+    if (self->size > 4 && strcmp(self->str + self->size - debug_size_remove, debug_end_line) == 0) {
         self->header_finished = 1;
         self->message_size = atoi(self->str + strlen("Content-Length:"));
         self->size = 0;
@@ -39,7 +46,7 @@ void _clear_message(message *self) {
 }
 
 message *create_message() {
-    message *msg = malloc(sizeof(message));
+    message *msg = malloc(sizeof (message));
     msg->str = malloc(MAX_LSP_MESSAGE_SIZE);
     msg->size = 0;
     msg->message_size = 0;

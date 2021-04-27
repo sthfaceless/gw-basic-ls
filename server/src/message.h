@@ -2,14 +2,15 @@
 // Created by danil on 25.04.2021.
 //
 
+#ifndef GW_BASIC_SERVER_MESSAGE_H
+#define GW_BASIC_SERVER_MESSAGE_H
+
 #include "stdlib.h"
 #include "string.h"
 #include "logger.h"
 
 #define MAX_LSP_MESSAGE_SIZE sizeof(char) * ((1 << 16) + 1)
 
-#ifndef GW_BASIC_SERVER_MESSAGE_H
-#define GW_BASIC_SERVER_MESSAGE_H
 typedef struct message message;
 
 struct message {

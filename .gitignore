@@ -58,6 +58,6 @@ cmake-build-debug/**
 .eslintignore
 .vscodeignore
 .eslintrc.js
-
+pcbasic-v1.2.14/**
 **/out/**
 
