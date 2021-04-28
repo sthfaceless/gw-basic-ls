@@ -6,7 +6,7 @@
 
 static char *send_message_buf;
 
-json_value *get_by_name(const json_value *val, const char *name) {
+static json_value *get_by_name(const json_value *val, const char *name) {
     size_t length = val->u.object.length;
     for (int i = 0; i < length; ++i)
         if (strcmp(val->u.object.values[i].name, name) == 0) {
@@ -15,14 +15,14 @@ json_value *get_by_name(const json_value *val, const char *name) {
     return json_null_new();
 }
 
-json_value *prepare_response_object(const json_value* val, json_value * result){
+static json_value *prepare_response_object(const json_value* val, json_value * result){
     json_value * response = json_object_new(2);
     json_object_push(response, "id", json_integer_new(get_by_name(val, "id")->u.integer));
     json_object_push(response, "result", result);
     return response;
 }
 
-json_value *prepare_diagnostics_object(const json_value *document, json_value *diagnostics_list){
+static json_value *prepare_diagnostics_object(const json_value *document, json_value *diagnostics_list){
 
 
     json_value* diagnostics_params = json_object_new(3);
@@ -38,7 +38,7 @@ json_value *prepare_diagnostics_object(const json_value *document, json_value *d
     return diagnostics;
 }
 
-json_value *get_validation_response(const json_value * val){
+static json_value *get_validation_response(const json_value * val){
 
     json_value *document = get_by_name(get_by_name(val, "params"), "textDocument");
     const char * text = get_by_name(document, "text")->u.string.ptr;
@@ -47,15 +47,15 @@ json_value *get_validation_response(const json_value * val){
     return prepare_diagnostics_object(document, json_array_new(0));
 }
 
-json_value *get_completion_response(const json_value * val){
+static json_value *get_completion_response(const json_value * val){
     return prepare_response_object(val, json_null_new());
 }
 
-json_value *get_symbols_response(const json_value * val){
+static json_value *get_symbols_response(const json_value * val){
     return prepare_response_object(val, json_null_new());
 }
 
-json_value *get_initialization_response(const json_value *val) {
+static json_value *get_initialization_response(const json_value *val) {
 
     /*
      * Опции сохранения документа
@@ -108,7 +108,7 @@ json_value *get_initialization_response(const json_value *val) {
     return prepare_response_object(val, initialize_result);
 }
 
-void send_message(json_value *val) {
+static void send_message(json_value *val) {
 
     json_object_push(val, "jsonrpc", json_string_new("2.0"));
 
@@ -126,7 +126,7 @@ void send_message(json_value *val) {
     fflush(stdout);
 }
 
-_Bool _process(const language_server *self, const char *str, const size_t size) {
+static _Bool process(const language_server *self, const char *str, const size_t size) {
 
     Logger->log(log_request, str);
 
@@ -163,7 +163,7 @@ _Bool _process(const language_server *self, const char *str, const size_t size) 
 language_server *create_language_server() {
     language_server *ls = malloc(sizeof(language_server));
 
-    ls->process = _process;
+    ls->process = process;
 
     send_message_buf = malloc(MAX_LSP_MESSAGE_SIZE);
 

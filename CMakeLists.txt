@@ -11,7 +11,7 @@ add_executable(gw_basic_server server/src/main.c
         server/src/logger.c server/src/logger.h
         server/src/language_server.c server/src/language_server.h
         server/src/json.c server/src/json.h
-        server/src/json-builder.c server/src/json-builder.h server/src/types.h server/src/map.c server/src/map.h server/src/vector.c server/src/vector.h)
+        server/src/json-builder.c server/src/json-builder.h server/src/types.h server/src/map.c server/src/map.h server/src/vector.c server/src/vector.h server/src/types.c)
 target_link_libraries(gw_basic_server m)
 include_directories(server/src)
 

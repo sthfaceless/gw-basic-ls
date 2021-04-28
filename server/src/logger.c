@@ -5,7 +5,7 @@
 #include "logger.h"
 
 
-void _log(const log_type type, const char *str) {
+static void log(const log_type type, const char *str) {
     FILE *fptr = fopen(Logger->filename, "a");
     switch (type) {
         case log_info:
@@ -28,7 +28,7 @@ void _log(const log_type type, const char *str) {
 
 void initialize_logger(const char *filename) {
     Logger = malloc(sizeof(logger));
-    Logger->log = _log;
+    Logger->log = log;
     Logger->filename = filename;
 }
 

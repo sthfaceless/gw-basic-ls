@@ -7,17 +7,13 @@
 #include "logger.h"
 #include "message.h"
 #include "language_server.h"
+#include "map.h"
 
 #define LOG_FILE_PATH "/home/danil/CLionProjects/gw_basic_server/sandbox/log.txt"
 
 extern logger* Logger;
 
-struct node{
-    int key, val;
-};
-
 int main(int argc, char * argv[]) {
-
 
     initialize_logger(LOG_FILE_PATH);
     message * msg = create_message();

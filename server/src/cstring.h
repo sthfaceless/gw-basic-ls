@@ -7,6 +7,10 @@
 
 #include <glob.h>
 #include <stdlib.h>
+#include "string.h"
+#include <pcre.h>
+#include "vector.h"
+#include "map.h"
 
 #define DEFAULT_BUFF_SIZE 16
 
@@ -19,18 +23,7 @@ struct string {
 
 string *get_string();
 
-typedef struct {
-    int **matches;
-    size_t count;
-} match_result;
-
-match_result *match(const char *str, const char *pattern);
-
-char ** split(const char *str, const char *sym);
-
-int find_first(const char *str, const char *substr);
-
-int contains(const char *str, const char *substr);
+vector* match(const char *str, char *pattern);
 
 void remove_spaces(char *str);
 
