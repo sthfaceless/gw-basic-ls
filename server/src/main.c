@@ -7,19 +7,32 @@
 #include "logger.h"
 #include "message.h"
 #include "language_server.h"
-#include "map.h"
+#include "cstring.h"
+#include "vector.h"
+#include "parser.h"
 
-#define LOG_FILE_PATH "/home/danil/CLionProjects/gw_basic_server/sandbox/log.txt"
+#define LOG_FILE_PATH "sandbox/log.txt"
+#define CONFIG_FILE_PATH "data/config.json"
 
 extern logger* Logger;
 
+void debugi(int val){
+	printf("%d\n", val);
+}
+
+void debug(void* str){
+	if(str)
+		printf("%s\n", (char *) str);
+}
+
 int main(int argc, char * argv[]) {
 
-    initialize_logger(LOG_FILE_PATH);
+	initialize_logger(LOG_FILE_PATH);
+
     message * msg = create_message();
     language_server *ls = create_language_server();
 
-    FILE *fptr = fopen("/home/danil/CLionProjects/gw_basic_server/sandbox/log2.txt", "a");
+    FILE *fptr = fopen("sandbox/log2.txt", "a");
 
     while (1){
 

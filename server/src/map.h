@@ -6,6 +6,7 @@
 #define GW_BASIC_SERVER_MAP_H
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdarg.h>
 #include "math.h"
 #include "types.h"
@@ -41,7 +42,7 @@ struct map{
 
 map *create_map(type_t key_t);
 map *create_custom_map(hasher _hasher, comp _comp);
-static map* create_custom_map_sized(hasher _hasher, comp _comp, size_t size);
+map* create_custom_map_sized(hasher _hasher, comp _comp, size_t size);
 void free_map(map* self);
 void free_map_no_values(map* self);
 

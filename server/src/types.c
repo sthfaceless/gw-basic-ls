@@ -4,6 +4,8 @@
 #include "types.h"
 
 static int int_comp(const void* arg1, const void* arg2) {
+	if(!arg1 || !arg2) return 1;
+
 	ll res = (*(ll*)arg1 - *(ll*)arg2);
 	if(res < 0) return -1;
 	else if(res > 0) return 1;
@@ -11,6 +13,8 @@ static int int_comp(const void* arg1, const void* arg2) {
 }
 
 static int double_comp(const void* arg1, const void* arg2){
+	if(!arg1 || !arg2) return 1;
+
 	ld res = (*(ld*)arg1 - *(ld*) arg2);
 	if(res < 0) return -1;
 	else if(res > 0) return 1;
@@ -18,14 +22,17 @@ static int double_comp(const void* arg1, const void* arg2){
 }
 
 static int ch_comp(const void* arg1, const void *arg2){
+	if(!arg1 || !arg2) return 1;
 	return (*(char*) arg1 - *(char *) arg2);
 }
 
 static int str_comp(const void* arg1, const void* arg2){
+	if(!arg1 || !arg2) return 1;
 	return strcmp((char *) arg1, (char *) arg2);
 }
 
 static int ptr_comp(const void* arg1, const void* arg2){
+	if(!arg1 || !arg2) return 1;
 	return int_comp(&arg1, &arg2);
 }
 
@@ -44,6 +51,11 @@ comp get_comparator(type_t type) {
 		default:
 			return ptr_comp;
 	}
+}
+
+int* wrapi(int val){
+	int *val_wrapper = malloc(sizeof (int));
+	return val_wrapper;
 }
 
 void swap(void* a, void* b){

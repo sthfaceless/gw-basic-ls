@@ -6,6 +6,7 @@
 #define GW_BASIC_SERVER_TYPES_H
 
 #include "string.h"
+#include "stdlib.h"
 
 typedef unsigned long long ull;
 typedef long long ll;
@@ -22,5 +23,5 @@ typedef enum {
 typedef int (*comp)(const void*, const void*);
 comp get_comparator(type_t type);
 void swap(void* a, void* b);
-
+int* wrapi(int val);
 #endif //GW_BASIC_SERVER_TYPES_H

@@ -9,14 +9,19 @@
 #include "string.h"
 #include "json.h"
 #include "json-builder.h"
+#include "json_helper.h"
 #include "logger.h"
 #include "message.h"
 #include "cstring.h"
+#include "parser.h"
 
 typedef struct language_server language_server;
 
 struct language_server {
-    _Bool (*process)(const language_server *, const char *, const size_t);
+	gwparser* parser;
+	map * documents;
+	char *send_message_buf;
+    _Bool (*process)(language_server *, const char *, const size_t);
 };
 
 extern logger *Logger;

@@ -14,7 +14,7 @@ static ull _hash(const ull prev, const ull val) {
 static ull ll_hasher(void* _val) {
 	ull val = *((ull*)(_val));
 	ull res = INIT_HASH_VALUE;
-	while (val>=0) {
+	while (val > 0) {
 		res = _hash(res, val & MASK4);
 		val >>= 4;
 	}
@@ -33,7 +33,7 @@ static ull ld_hasher(void* _val) {
 static ull ch_hasher(void* _val) {
 	char ch = *((char*)(_val));
 	ull res = INIT_HASH_VALUE;
-	while (ch>=0) {
+	while (ch > 0) {
 		res = _hash(res, ch & MASK4);
 		ch >>= 4;
 	}
@@ -87,10 +87,12 @@ static void __put(map* self, map_entry* entry) {
 		hash = (hash+MAP_VECTOR_STEP)%self->_size,
 				curr = self->entries->get(self->entries, hash);
 
-	if (curr)
-		curr->cnt++;
-	else
+	if (curr) {
+		curr->cnt++, curr->val = entry->val;
+		free(entry);
+	}else
 		self->entries->set(self->entries, hash, entry);
+	self->size++;
 }
 
 static void _put(map* self, void* key, void* val) {
@@ -100,7 +102,7 @@ static void _put(map* self, void* key, void* val) {
 lvector* entry_list(map* self) {
 	lvector* vect = create_lvector();
 	for (void** ptr = self->entries->items; ptr<self->entries->items+self->_size; ptr++)
-		if (ptr!=NULL)
+		if (*ptr!=NULL)
 			vect->push(vect, *ptr);
 	return vect;
 }
@@ -110,7 +112,7 @@ static int find(map* self, void* key) {
 	ull hash = self->_hasher(key)%self->_size;
 
 	void* result = self->entries->get(self->entries, hash);
-	while (result!=NULL && !self->_comp(((map_entry*)result)->key, key) && count<self->_size)
+	while (result!=NULL && self->_comp(((map_entry*)result)->key, key) && count<self->_size)
 		hash = (hash+MAP_VECTOR_STEP)%self->_size,
 				result = self->entries->get(self->entries, hash),
 				count++;
@@ -148,7 +150,7 @@ static void* get(map* self, void* key) {
 
 	int pos = find(self, key);
 	if (pos!=-1)
-		return self->entries->get(self->entries, pos);
+		return ((map_entry*) self->entries->get(self->entries, pos))->val;
 
 	return NULL;
 }
@@ -161,13 +163,14 @@ static void erase(map* self, void* key) {
 }
 
 static int count(map* self, void* key) {
-	void* entry = get(self, key);
-	if (entry==NULL)
+	int pos = find(self, key);
+	if (pos == -1)
 		return 0;
+	void* entry = self->entries->get(self->entries, pos);
 	return ((map_entry*)entry)->cnt;
 }
 
-static map* create_custom_map_sized(hasher _hasher, comp _comp, size_t size) {
+map* create_custom_map_sized(hasher _hasher, comp _comp, size_t size) {
 	map* self = malloc(sizeof(map));
 
 	self->_size = size;
@@ -204,6 +207,7 @@ static tnode* create_node(void* key, void* val) {
 	tnode* node = malloc(sizeof(tnode));
 	node->key = key;
 	node->val = val;
+	node->cnt = 1;
 	node->priority = rand();
 	node->l = node->r = NULL;
 	return node;
@@ -212,7 +216,7 @@ static tnode* create_node(void* key, void* val) {
 static tnode* tfind(tmap* self, void* key) {
 	tnode* node = self->root;
 	while (node && self->_comp(node->key, key))
-		if (self->_comp(key, node->key))
+		if (self->_comp(key, node->key) < 0)
 			node = node->l;
 		else
 			node = node->r;
@@ -229,14 +233,14 @@ static void split(tmap* self, tnode* t, void* key, tnode** l, tnode** r) {
 }
 
 static void insert(tmap* self, tnode** t, tnode* it) {
-	if (!t)
+	if (!(*t))
 		*t = it;
-	if(!self->_comp((*t)->key, it->key)){
+	else if(!self->_comp((*t)->key, it->key)){
 		(*t)->cnt++;
 		free(it);
 		return;
 	}
-	if (it->priority>(*t)->priority)
+	else if (it->priority>(*t)->priority)
 		split(self, *t, it->key, &it->l, &it->r), *t = it;
 	else
 		insert(self, self->_comp(it->key, (*t)->key)<0 ? &(*t)->l : &(*t)->r, it);
@@ -252,10 +256,15 @@ static void merge(tmap* self, tnode** t, tnode* l, tnode* r) {
 }
 
 static void _terase(tmap* self, tnode** t, void* key) {
-	if (!self->_comp((*t)->key, key))
-		merge(self, t, (*t)->l, (*t)->r);
-	else
-		_terase(self, self->_comp(key, (*t)->key)<0 ? &(*t)->l : &(*t)->r, key);
+	if(*t) {
+		if (!self->_comp((*t)->key, key)) {
+			free(*t);
+			self->size--;
+			merge(self, t, (*t)->l, (*t)->r);
+		}
+		else
+			_terase(self, self->_comp(key, (*t)->key)<0 ? &(*t)->l : &(*t)->r, key);
+	}
 }
 
 static tnode* unite(tmap* self, tnode* l, tnode* r) {
@@ -272,6 +281,7 @@ static tnode* unite(tmap* self, tnode* l, tnode* r) {
 
 static void tput(tmap* self, void* key, void* val) {
 	insert(self, &self->root, create_node(key, val));
+	self->size++;
 }
 static void* tget(tmap* self, void* key) {
 	tnode* node = tfind(self, key);
@@ -295,7 +305,7 @@ static lvector* tentry_list(tmap* self) {
 		queue->pop(queue);
 		if (node->l) queue->push(queue, node->l);
 		if (node->r) queue->push(queue, node->r);
-		vect->push(vect, node->val);
+		vect->push(vect, node);
 	}
 	free_lvector_no_values(queue);
 
