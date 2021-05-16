@@ -79,7 +79,7 @@ static vector* completion_bfs(wtree* tree, char* str) {
 		while (it->has_next(it))
 			queue->push(queue, (int*)it->get_next(it));
 	}
-	free_lvector_no_values(queue);
+	free_lvector(queue);
 
 	return vect;
 }

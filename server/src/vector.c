@@ -10,7 +10,7 @@ static void shrink_vector(vector* self){
 }
 
 static void* get(const vector* self, const int pos) {
-	if (pos<self->size)
+	if (self->items && pos < self->size)
 		return *(self->items+pos);
 	return NULL;
 }
@@ -125,7 +125,8 @@ vector* create_vector() {
 
 void free_vector(vector* self) {
 	for (void** ptr = self->items; ptr<self->items+self->size; ++ptr) {
-		free(*ptr);
+		if(*ptr)
+			free(*ptr);
 	}
 	free(self->items);
 	free(self);
@@ -154,10 +155,17 @@ void* getl(lvector* self, const int pos) {
 	return curr->val;
 }
 
-void pushl(lvector* self, void* val) {
-
+static lnode* create_lnode(void *val){
 	lnode* node = malloc(sizeof(lnode));
 	node->val = val;
+	node->next = NULL;
+	node->prev = NULL;
+	return node;
+}
+
+void pushl(lvector* self, void* val) {
+
+	lnode* node = create_lnode(val);
 
 	node->prev = self->last;
 	if (self->last)
@@ -172,8 +180,7 @@ void pushl(lvector* self, void* val) {
 
 void push_first(lvector* self, void* val) {
 
-	lnode* node = malloc(sizeof(lnode));
-	node->val = val;
+	lnode* node = create_lnode(val);
 
 	node->next = self->first;
 	if (self->first)
@@ -189,7 +196,6 @@ void push_first(lvector* self, void* val) {
 void popl(lvector* self) {
 	if (self->last) {
 		lnode* prev = self->last->prev;
-		free(self->last);
 		if (prev) {
 			self->last = prev;
 			prev->next = NULL;
@@ -204,7 +210,6 @@ void popl(lvector* self) {
 void pop_first(lvector* self) {
 	if (self->first) {
 		lnode* next = self->first->next;
-		free(self->first);
 		if (next) {
 			self->first = next;
 			next->prev = NULL;
@@ -245,6 +250,7 @@ lvector* create_lvector() {
 	lvector* vect = malloc(sizeof(lvector));
 
 	vect->size = 0;
+	vect->first = vect->last = NULL;
 
 	vect->get = getl;
 	vect->get_first = get_first;

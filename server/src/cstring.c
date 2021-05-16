@@ -25,7 +25,7 @@ static void add(string* self, char ch) {
 }
 
 static int find(string* self, string* oth) {
-	return strstr(self->get_chars(self), oth->get_chars(oth));
+	return strstr(self->get_chars(self), oth->get_chars(oth)) - self->get_chars(self);
 }
 
 static string* conc(string* self, string* other) {
@@ -170,6 +170,11 @@ void strlower(char* str) {
 	}
 }
 char* copystr(char* str) {
+	if(str == NULL){
+		char* emp = malloc(sizeof (char));
+		emp[0] = 0;
+		return emp;
+	}
 	size_t sz = strlen(str);
 	char* res = malloc(sizeof(char)*(sz+1));
 	strcpy(res, str);
@@ -217,7 +222,9 @@ static void add_wtree(wtree* self, const char* str, void* payload) {
 					push(self->edges[curr-self->tree], wrapi(create_wtree_node(self, NULL, ch, curr-self->tree)));
 		}
 		curr = self->tree+(*curr)[ch];
+		str++;
 	}
+	int v = curr - self->tree;
 	if (curr!=self->tree)
 		self->terminate[curr-self->tree] = payload;
 }

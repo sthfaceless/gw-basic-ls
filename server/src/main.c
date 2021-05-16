@@ -11,7 +11,7 @@
 #include "vector.h"
 #include "parser.h"
 
-#define LOG_FILE_PATH "sandbox/log.txt"
+#define LOG_FILE_PATH "/home/danil/CLionProjects/gw_basic_server/sandbox/log.txt"
 #define CONFIG_FILE_PATH "data/config.json"
 
 extern logger* Logger;
@@ -32,7 +32,7 @@ int main(int argc, char * argv[]) {
     message * msg = create_message();
     language_server *ls = create_language_server();
 
-    FILE *fptr = fopen("sandbox/log2.txt", "a");
+    FILE *fptr = fopen("/home/danil/CLionProjects/gw_basic_server/sandbox/log2.txt", "a");
 
     while (1){
 

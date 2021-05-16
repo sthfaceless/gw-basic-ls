@@ -90,8 +90,10 @@ static void __put(map* self, map_entry* entry) {
 	if (curr) {
 		curr->cnt++, curr->val = entry->val;
 		free(entry);
-	}else
+	}else {
 		self->entries->set(self->entries, hash, entry);
+//		self->size++;
+	}
 	self->size++;
 }
 
@@ -125,17 +127,21 @@ static int find(map* self, void* key) {
 
 static void shrink_map(map* self) {
 
-	map* nmap = create_custom_map_sized(self->_hasher, self->_comp, self->_size*MAP_EXPANSION_CONSTANT);
+//	map* nmap = create_custom_map_sized((self)->_hasher, (self)->_comp, (self)->_size*MAP_EXPANSION_CONSTANT);
+
+	size_t nsize = (self)->_size * MAP_EXPANSION_CONSTANT;
 
 	lvector* values = entry_list(self);
+	free_vector_no_values(self->entries);
+	self->size = 0;
+	self->entries = create_vector_sized(nsize, NULL);
+
 	while (values->size) {
-		__put(nmap, (map_entry*)values->get_last(values));
+		__put(self, (map_entry*)values->get_last(values));
 		values->pop(values);
 	}
 	free_lvector_no_values(values);
 
-	free_map_no_values(self);
-	self = nmap;
 }
 
 static void put(map* self, void* key, void* val) {
