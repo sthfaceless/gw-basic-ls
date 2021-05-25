@@ -13,7 +13,7 @@ export function activate(context: ExtensionContext) {
 
 	let serverStartupCommand = '/home/danil/CLionProjects/gw_basic_server/server/out/gw_basic_server';
 	let serverExe: Executable = {
-		command: serverStartupCommand,
+		command: serverStartupCommand,	
 		args: [''],
 		options: {
 			env: process.env,
@@ -23,7 +23,14 @@ export function activate(context: ExtensionContext) {
 
 	let serverOptions: ServerOptions = {
 		run:  serverExe,
-		debug: serverExe
+		debug: {
+			command: serverStartupCommand,
+			args: ['--nolazy', '--inspect=6009'],
+			options: {
+				env: process.env,
+				shell: true
+			}
+		}
 	}
 
 	let clientOptions: LanguageClientOptions = {

@@ -6,6 +6,8 @@
 #ifndef GW_BASIC_SERVER_LANGUAGE_SERVER_H
 #define GW_BASIC_SERVER_LANGUAGE_SERVER_H
 
+#include <debug.h>
+
 #include "string.h"
 #include "json.h"
 #include "json-builder.h"

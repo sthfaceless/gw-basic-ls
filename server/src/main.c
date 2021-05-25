@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "debug.h"
+
 #include "json-builder.h"
 #include "json.h"
 #include "logger.h"
@@ -16,49 +18,40 @@
 
 extern logger* Logger;
 
-void debugi(int val){
-	printf("%d\n", val);
-}
-
-void debug(void* str){
-	if(str)
-		printf("%s\n", (char *) str);
-}
-
-int main(int argc, char * argv[]) {
+int main(int argc, char* argv[]) {
 
 	initialize_logger(LOG_FILE_PATH);
 
-    message * msg = create_message();
-    language_server *ls = create_language_server();
+	message* msg = create_message();
+	language_server* ls = create_language_server();
 
-    FILE *fptr = fopen("/home/danil/CLionProjects/gw_basic_server/sandbox/log2.txt", "a");
+	FILE* fptr = fopen("/home/danil/CLionProjects/gw_basic_server/sandbox/log2.txt", "a");
 
-    while (1){
+	while (1) {
 
-        int c = getchar();
+		int c = getchar();
 
-        if(c >= 0){
+		if (c>=0) {
 
-            fprintf(fptr, "%c", c);
-            fflush(fptr);
+			fprintf(fptr, "%c", c);
+			fflush(fptr);
 
-            msg->add_char(msg, c);
+			msg->add_char(msg, c);
 
-            if(msg->is_finished(msg)){
-                if(!ls->process(ls, msg->get_message(msg), msg->size))
-                    break;
-                msg->clear_message(msg);
-            }
-        }
+			if (msg->is_finished(msg)) {
+				if (!ls->process(ls, msg->get_message(msg), msg->size))
+					break;
+				msg->clear_message(msg);
+			}
+		}
 
-    }
+	}
 
-    fclose(fptr);
+	fclose(fptr);
 
-    free_language_server(ls);
-    free_message(msg);
-    free_logger();
+	free_language_server(ls);
+	free_message(msg);
+	free_logger();
 
-    return 0;
+	return 0;
 }

@@ -92,9 +92,8 @@ static void __put(map* self, map_entry* entry) {
 		free(entry);
 	}else {
 		self->entries->set(self->entries, hash, entry);
-//		self->size++;
+		self->size++;
 	}
-	self->size++;
 }
 
 static void _put(map* self, void* key, void* val) {
@@ -126,8 +125,6 @@ static int find(map* self, void* key) {
 }
 
 static void shrink_map(map* self) {
-
-//	map* nmap = create_custom_map_sized((self)->_hasher, (self)->_comp, (self)->_size*MAP_EXPANSION_CONSTANT);
 
 	size_t nsize = (self)->_size * MAP_EXPANSION_CONSTANT;
 

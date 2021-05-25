@@ -40,7 +40,7 @@ static json_value* get_completion_response(language_server* self, const json_val
 		return prepare_response_object(val, json_null_new());
 
 	json_value* pos = get_by_name(get_by_name(val, "params"), "position");
-	int line = get_by_name(pos, "line")->u.integer, character = get_by_name(pos, "character");
+	int line = get_by_name(pos, "line")->u.integer, character = get_by_name(pos, "character")->u.integer;
 
 	json_value* result = json_array_new(0);
 	vector* completions = self->parser->make_completions(self->parser, (char*)text, line, character);
