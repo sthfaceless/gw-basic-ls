@@ -6,6 +6,7 @@
 #define GW_BASIC_SERVER_PARSER_H
 
 #include "stdio.h"
+#include "stdlib.h"
 #include "string.h"
 #include "ctype.h"
 #include "cstring.h"
@@ -14,8 +15,9 @@
 #include "json_helper.h"
 #include "logger.h"
 #include "map.h"
+#include "diagnostic_messages.h"
 
-typedef enum{
+typedef enum {
 	Unknown,
 	File,
 	Module,
@@ -42,21 +44,23 @@ typedef enum{
 	Struct,
 	Event,
 	Operator,
-	TypeParameter
+	TypeParameter,
+	Comment
 } token_t;
 
 typedef struct token token;
-struct token{
-	char * str;
+struct token {
+	char* str;
 	token_t kind;
-	int l, r, line;
+	int l, r, line_l, line_r;
 };
 
 typedef struct gwparser gwparser;
-struct gwparser{
-	wtree *keywords;
-	vector* (*make_tokens)(gwparser*, char*);
-	vector* (*make_completions)(gwparser*, char*, int, int);
+struct gwparser {
+	wtree* keywords;
+	vector* (* make_tokens)(gwparser*, char*);
+	vector* (* make_completions)(gwparser*, char*, int, int);
+	vector* (* validate)(gwparser*, char*);
 };
 
 gwparser* init_parser();

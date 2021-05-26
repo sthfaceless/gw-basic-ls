@@ -55,11 +55,26 @@ comp get_comparator(type_t type) {
 
 int* wrapi(int val){
 	int *val_wrapper = malloc(sizeof (int));
+	*val_wrapper = val;
 	return val_wrapper;
 }
 
-void swap(void* a, void* b){
-	void* tmp = a;
-	a = b;
-	b = a;
+char* wrapc(char val){
+	char *char_wrapper = malloc(sizeof (char));
+	*char_wrapper = val;
+	return char_wrapper;
+}
+
+void swap(void* *a, void* *b){
+	void* tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+void reverse_charr(char* arr, int sz){
+	for(char* l = arr, *r = arr+sz-1; l < r; l++, r--) {
+		ll tmp = *l;
+		*l = *r;
+		*r = tmp;
+	}
 }

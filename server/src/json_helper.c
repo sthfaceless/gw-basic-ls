@@ -6,11 +6,13 @@
 
 
 json_value *get_by_name(const json_value *val, const char *name) {
-	size_t length = val->u.object.length;
-	for (int i = 0; i < length; ++i)
-		if (strcmp(val->u.object.values[i].name, name) == 0) {
-			return val->u.object.values[i].value;
-		}
+	if(val){
+		size_t length = val->u.object.length;
+		for (int i = 0; i < length; ++i)
+			if (strcmp(val->u.object.values[i].name, name) == 0) {
+				return val->u.object.values[i].value;
+			}
+	}
 	return json_null_new();
 }
 

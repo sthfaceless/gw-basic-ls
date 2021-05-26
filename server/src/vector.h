@@ -29,6 +29,8 @@ struct vector {
 
 	void* (* get)(const vector*, const int);
 
+	void* (* last)(const vector*);
+
 	void (* push)(vector*, void*);
 
 	void (* set)(vector*, const int pos, void*);

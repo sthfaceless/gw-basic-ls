@@ -22,6 +22,8 @@ typedef enum {
 
 typedef int (*comp)(const void*, const void*);
 comp get_comparator(type_t type);
-void swap(void* a, void* b);
+void swap(void* *a, void* *b);
 int* wrapi(int val);
+char* wrapc(char val);
+void reverse_charr(char* arr, int sz);
 #endif //GW_BASIC_SERVER_TYPES_H

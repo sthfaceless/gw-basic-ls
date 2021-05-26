@@ -88,7 +88,9 @@ static void __put(map* self, map_entry* entry) {
 				curr = self->entries->get(self->entries, hash);
 
 	if (curr) {
-		curr->cnt++, curr->val = entry->val;
+		free(curr->val);
+		curr->val = entry->val;
+		curr->cnt++;
 		free(entry);
 	}else {
 		self->entries->set(self->entries, hash, entry);
@@ -274,7 +276,7 @@ static tnode* unite(tmap* self, tnode* l, tnode* r) {
 	if (!l || !r)
 		return l ? l : r;
 	if (l->priority<r->priority)
-		swap(l, r);
+		swap((void**)&l, (void**)&r);
 	tnode* lt, * rt;
 	split(self, r, l->key, &lt, &rt);
 	l->l = unite(self, l->l, lt);

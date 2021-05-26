@@ -14,7 +14,7 @@ static json_value* prepare_response_object(const json_value* val, json_value* re
 static json_value* prepare_diagnostics_object(const json_value* document, json_value* diagnostics_list) {
 
 	json_value* diagnostics_params = json_object_new(3);
-	json_object_push(diagnostics_params, "uri", json_string_new(strdup(get_by_name(document, "uri")->u.string.ptr)));
+	json_object_push(diagnostics_params, "uri", json_string_new(copystr(get_by_name(document, "uri")->u.string.ptr)));
 	json_object_push(diagnostics_params, "version", json_integer_new(get_by_name(document, "version")->u.integer));
 	json_object_push(diagnostics_params, "diagnostics", diagnostics_list);
 
@@ -29,8 +29,24 @@ static json_value* get_validation_response(language_server* self, const json_val
 
 	json_value* document = get_by_name(get_by_name(val, "params"), "textDocument");
 	const char* text = get_by_name(document, "text")->u.string.ptr;
+	json_value *diagnostics = json_array_new(0);
 
-	return prepare_diagnostics_object(document, json_array_new(0));
+	vector* result = self->parser->validate(self->parser, text);
+	iterator *it = result->iterator(result);
+	while(it->has_next(it)){
+		diagnostic *dgn = (diagnostic *)it->get_next(it);
+
+		json_value *json_dgn = json_object_new(0);
+		json_object_push(json_dgn, "range", create_range(dgn->line, dgn->l, dgn->line, dgn->r));
+		json_object_push(json_dgn, "severity", json_integer_new(dgn->t+1));
+		json_object_push(json_dgn, "message", json_string_new(dgn->message));
+		json_object_push(json_dgn, "source", json_string_new("gw-basic language server"));
+
+		json_array_push(diagnostics, json_dgn);
+	}
+	free_vector(result);
+
+	return prepare_diagnostics_object(document, diagnostics);
 }
 
 static json_value* get_completion_response(language_server* self, const json_value* val) {
@@ -70,8 +86,8 @@ static json_value* get_symbols_response(language_server* self, const json_value*
 			json_value* sym = json_object_new(0);
 			json_object_push(sym, "name", json_string_new(tok->str));
 			json_object_push(sym, "kind", json_integer_new(tok->kind));
-			json_object_push(sym, "range", create_range(tok->line, tok->l, tok->l, tok->r));
-			json_object_push(sym, "selectionRange", create_range(tok->line, tok->l, tok->l, tok->r));
+			json_object_push(sym, "range", create_range(tok->line_l, tok->l, tok->line_r, tok->r));
+			json_object_push(sym, "selectionRange", create_range(tok->line_l, tok->l, tok->line_r, tok->r));
 			json_array_push(res, sym);
 		}
 	}
@@ -153,8 +169,15 @@ static void send_message(char* send_message_buf, json_value* val) {
 
 static void update_document(language_server* self, const json_value* val) {
 	json_value* document = get_by_name(get_by_name(val, "params"), "textDocument");
-	char* uri = copystr(get_by_name(document, "uri")->u.string.ptr),
-			* text = copystr(get_by_name(document, "text")->u.string.ptr);
+	char* uri = copystr(get_by_name(document, "uri")->u.string.ptr);
+
+	char *text = copystr(get_by_name(document, "text")->u.string.ptr);
+	int len = strlen(text);
+	if(!len) {
+		json_value* changes = get_by_name(get_by_name(val, "params"), "contentChanges");
+		if(changes->type != json_null)
+			text = copystr(get_by_name(changes->u.array.values[0], "text")->u.string.ptr);
+	}
 	strlower(text);
 	self->documents->put(self->documents, uri, text);
 }

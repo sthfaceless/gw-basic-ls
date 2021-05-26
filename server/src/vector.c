@@ -15,6 +15,10 @@ static void* get(const vector* self, const int pos) {
 	return NULL;
 }
 
+static void* last(const vector *self){
+	return get(self, self->size-1);
+}
+
 static void push(vector* self, void* val) {
 	if (self->size==self->_size)
 		shrink_vector(self);
@@ -50,16 +54,16 @@ static void merge(vector *self, vector *oth){
 
 static void reverse(vector *self){
 	for(void* *l = self->items,** r = self->items+self->size-1; l < r; l++, r--)
-		*l = *r;
+		swap(l, r);
 }
 
 static int has_next(iterator * self){
-	vector *vect = (vector *) self;
+	vector *vect = (vector *) self->_iterable;
 	return self->curr < vect->size;
 }
 
 static void* get_next(iterator * self){
-	vector *vect = (vector *) self;
+	vector *vect = (vector *) self->_iterable;
 	return vect->get(vect, self->curr++);
 }
 
@@ -85,6 +89,7 @@ vector* create_vector_sized(size_t size, void* val) {
 	vect->push = push;
 	vect->set = set;
 	vect->get = get;
+	vect->get = last;
 	vect->pop = pop;
 	vect->fill = fill;
 	vect->merge = merge;
@@ -223,16 +228,15 @@ void pop_first(lvector* self) {
 
 static int has_lnext(iterator * self){
 	lnode *node = (lnode *) self->_iterable;
-	return node != NULL && node->next != NULL;
+	return node != NULL;
 }
 
 static void* get_lnext(iterator * self){
-	lnode *node = (lnode *) self->_iterable;
-	if(node){
+	if(self->_iterable){
+		lnode *node = (lnode *) self->_iterable;
 		self->_iterable = node->next;
 		self->curr++;
-		if(self->_iterable)
-			return node->val;
+		return node->val;
 	}
 	return NULL;
 }

@@ -2,22 +2,24 @@
 // Created by danil on 25.04.2021.
 //
 
-static int debug_size_remove = 4;
-static char *debug_end_line = "\r\n\r\n";
-
-
 #include "message.h"
 
 static const char *get_message(const message *self) {
     return self->str;
 }
 
+static int header_ended(const char *str, int size){
+	int cnt = 0;
+	while(*(str + size - 1) == '\n'){
+		if(*(str+size-2) == '\r') size--;
+		size--;
+		cnt++;
+	}
+	return cnt == 2;
+}
+
 static void process_header(message *self) {
-#ifdef MY_DEBUG
-    debug_size_remove = 2;
-    debug_end_line = "\n\n";
-#endif
-    if (self->size > 4 && strcmp(self->str + self->size - debug_size_remove, debug_end_line) == 0) {
+    if (self->size > 4 && header_ended(self->str, self->size)) {
         self->header_finished = 1;
         self->message_size = atoi(self->str + strlen("Content-Length:"));
         self->size = 0;

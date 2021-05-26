@@ -60,4 +60,4 @@ cmake-build-debug/**
 .eslintrc.js
 pcbasic-v1.2.14/**
 **/out/**
-
+**/sandbox/**
