@@ -1,8 +1,1430 @@
 {
-  "keywords" : [
-    {
-      "name": "print",
-      "kind": 12
-    }
-  ]
+    "keywords": [
+        {
+            "name": "abs",
+            "type": "function",
+            "args": 1,
+            "pattern": "^abs(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the absolute value of the expression n.",
+            "syntax": "abs(n)",
+            "kind": 12
+        },
+        {
+            "name": "asc",
+            "type": "function",
+            "args": 1,
+            "pattern": "^asc(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return a numeric value that is the ASCII code for the first character of the string x$.",
+            "syntax": "asc(x$)",
+            "kind": 12
+        },
+        {
+            "name": "atn",
+            "type": "function",
+            "args": 1,
+            "pattern": "^atn(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the arctangent of x, when x is expressed in radians.",
+            "syntax": "atn(x)",
+            "kind": 12
+        },
+        {
+            "name": "auto",
+            "type": "command",
+            "purpose": "To generate and increment line numbers automatically each time you press the RETURN key.",
+            "syntax": "auto .[,[increment]]",
+            "kind": 12
+        },
+        {
+            "name": "beep",
+            "type": "statement",
+            "purpose": "To sound the speaker at 800 Hz (800 cycles per second) for one-quarter of a second.",
+            "syntax": "beep",
+            "kind": 12
+        },
+        {
+            "name": "bload",
+            "type": "command",
+            "purpose": "To load an image file anywhere in user memory.",
+            "syntax": "bload filename[,offset]",
+            "kind": 12
+        },
+        {
+            "name": "bsave",
+            "type": "command",
+            "purpose": "To save portions of user memory on the specified device.",
+            "syntax": "bsave filename,offset,length",
+            "kind": 12
+        },
+        {
+            "name": "call",
+            "type": "statement",
+            "purpose": "To call an assembly (or machine) language subroutine.",
+            "syntax": "call numvar[(variables)]",
+            "kind": 12
+        },
+        {
+            "name": "cdbl",
+            "type": "function",
+            "args": 1,
+            "pattern": "^cdbl(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To convert x to a double-precision number.",
+            "syntax": "cdbl(x)",
+            "kind": 12
+        },
+        {
+            "name": "chain",
+            "type": "statement",
+            "purpose": "To transfer control to the specified program and pass (chain) variables to it from the current program.",
+            "syntax": "chain[merge] filename[,[line][,[all][,delete range]]]",
+            "kind": 12
+        },
+        {
+            "name": "chdir",
+            "type": "command",
+            "purpose": "To change from one working directory to another.",
+            "syntax": "chdir pathname",
+            "kind": 12
+        },
+        {
+            "name": "chr$",
+            "type": "function",
+            "purpose": "To convert an ASCII code to its equivalent character.",
+            "syntax": "chr$(n)",
+            "kind": 12
+        },
+        {
+            "name": "cint",
+            "type": "function",
+            "args": 1,
+            "pattern": "^cint(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To round numbers with fractional portions to the next whole number or integer.",
+            "syntax": "cint(x)",
+            "kind": 12
+        },
+        {
+            "name": "circle",
+            "type": "statement",
+            "purpose": "To draw a circle, ellipse, and angles on the screen during use of the Graphics mode.",
+            "syntax": "circle(xcenter, ycenter), radius[,[color][,[start],[end][,aspect]]]",
+            "kind": 12
+        },
+        {
+            "name": "clear",
+            "type": "command",
+            "purpose": "To set all numeric variables to zero, all string variables to null, and to close all open files. Options set the end of memory and reserve the amount of string and stack space available for use by GW-BASIC.",
+            "syntax": "clear[,[expression1][,expression2]]",
+            "kind": 12
+        },
+        {
+            "name": "close",
+            "type": "statement",
+            "purpose": "To terminate input/output to a disk file or a device.",
+            "syntax": "close [[#]filenumber[,[#]filenumber]...]",
+            "kind": 12
+        },
+        {
+            "name": "cls",
+            "type": "statement",
+            "purpose": "To clear the screen.",
+            "syntax": "cls [n]",
+            "kind": 12
+        },
+        {
+            "name": "color",
+            "type": "statement",
+            "purpose": "To select display colors",
+            "syntax": "color [foreground][,[background]]",
+            "kind": 12
+        },
+        {
+            "name": "com(n)",
+            "type": "statement",
+            "purpose": "To enable or disable trapping of communications activity to the specified communications adapter.",
+            "syntax": "com(n) stop",
+            "kind": 12
+        },
+        {
+            "name": "common",
+            "type": "statement",
+            "purpose": "To pass variables to a chained program.",
+            "syntax": "common variables",
+            "kind": 12
+        },
+        {
+            "name": "cont",
+            "type": "command",
+            "purpose": "To continue program execution after a break.",
+            "syntax": "cont",
+            "kind": 12
+        },
+        {
+            "name": "cos",
+            "type": "function",
+            "args": 1,
+            "pattern": "^cos(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the cosine of the range of x.",
+            "syntax": "cos(x)",
+            "kind": 12
+        },
+        {
+            "name": "csng",
+            "type": "function",
+            "args": 1,
+            "pattern": "^csng(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To convert x to a single-precision number.",
+            "syntax": "csng(x)",
+            "kind": 12
+        },
+        {
+            "name": "csrlin",
+            "type": "variable",
+            "purpose": "To return the current line (row) position of the cursor.",
+            "syntax": "y=csrlin",
+            "kind": 8
+        },
+        {
+            "name": "cvd",
+            "type": "function",
+            "args": 1,
+            "pattern": "^cvd(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To convert string values to numeric values.",
+            "syntax": "cvd(8-byte string)",
+            "kind": 12
+        },
+        {
+            "name": "cvi",
+            "type": "function",
+            "args": 1,
+            "pattern": "^cvi(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To convert string values to numeric values.",
+            "syntax": "cvi(2-byte string)",
+            "kind": 12
+        },
+        {
+            "name": "cvs",
+            "type": "function",
+            "args": 1,
+            "pattern": "^cvs(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To convert string values to numeric values.",
+            "syntax": "cvs(4-byte string)",
+            "kind": 12
+        },
+        {
+            "name": "data",
+            "type": "statement",
+            "purpose": "To store the numeric and string constants that are accessed by the program READ statement(s).",
+            "syntax": "data constants",
+            "kind": 12
+        },
+        {
+            "name": "date$",
+            "type": "statement",
+            "purpose": "To set or retrieve the current date.",
+            "syntax": "date$=v$",
+            "kind": 12
+        },
+        {
+            "name": "def fn",
+            "type": "statement",
+            "purpose": "To define and name a function written by the user.",
+            "syntax": "def fnname[arguments] expression",
+            "kind": 12
+        },
+        {
+            "name": "defint",
+            "type": "statement",
+            "purpose": "To declare variable types as integer, single-precision, double-precision, or string.",
+            "syntax": "deftype letters",
+            "kind": 12
+        },
+        {
+            "name": "defdbl",
+            "type": "statement",
+            "purpose": "To declare variable types as integer, single-precision, double-precision, or string.",
+            "syntax": "deftype letters",
+            "kind": 12
+        },
+        {
+            "name": "defsng",
+            "type": "statement",
+            "purpose": "To declare variable types as integer, single-precision, double-precision, or string.",
+            "syntax": "deftype letters",
+            "kind": 12
+        },
+        {
+            "name": "defstr",
+            "type": "statement",
+            "purpose": "To declare variable types as integer, single-precision, double-precision, or string.",
+            "syntax": "deftype letters",
+            "kind": 12
+        },
+        {
+            "name": "def seg",
+            "type": "statement",
+            "purpose": "To assign the current segment address to be referenced by a subsequent BLOAD, BSAVE, CALL, PEEK, POKE, or USR.",
+            "syntax": "def seg [=address]",
+            "kind": 12
+        },
+        {
+            "name": "def usr",
+            "type": "statement",
+            "purpose": "To specify the starting address of an assembly language subroutine to be called from memory by the USR function.",
+            "syntax": "def usr[n]=integer",
+            "kind": 12
+        },
+        {
+            "name": "delete",
+            "type": "command",
+            "purpose": "To delete program lines or line ranges.",
+            "syntax": "delete line number1-",
+            "kind": 12
+        },
+        {
+            "name": "dim",
+            "type": "statement",
+            "purpose": "To specify the maximum values for array variable subscripts and allocate storage accordingly.",
+            "syntax": "dim variable(subscripts)[,variable(subscripts)]...",
+            "kind": 12
+        },
+        {
+            "name": "draw",
+            "type": "statement",
+            "purpose": "To draw a figure.",
+            "syntax": "draw string expression",
+            "kind": 12
+        },
+        {
+            "name": "edit",
+            "type": "command",
+            "purpose": "To display a specified line, and to position the cursor under the first digit of the line number, so that the line may be edited.",
+            "syntax": "edit .",
+            "kind": 12
+        },
+        {
+            "name": "end",
+            "type": "statement",
+            "purpose": "To terminate program execution, close all files, and return to command level.",
+            "syntax": "end",
+            "kind": 12
+        },
+        {
+            "name": "environ",
+            "type": "statement",
+            "purpose": "To allow the user to modify parameters in GW-BASIC's environment string table. This may be to change the path parameter for a child process, (see ENVIRON$, SHELL, and the MS-DOS utilities PATH command), or to pass parameters to a child by inventing a new environment parameter.",
+            "syntax": "environ string",
+            "kind": 12
+        },
+        {
+            "name": "environ$",
+            "type": "function",
+            "purpose": "To allow the user to retrieve the specified environment string from the environment table.",
+            "syntax": "v$=environ$(nthparm)",
+            "kind": 12
+        },
+        {
+            "name": "eof",
+            "type": "function",
+            "args": 1,
+            "pattern": "^eof(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return -1 (true) when the end of a sequential or a communications file has been reached, or to return 0 if end of file (EOF) has not been found.",
+            "syntax": "eof(file number)",
+            "kind": 12
+        },
+        {
+            "name": "erase",
+            "type": "statement",
+            "purpose": "To eliminate arrays from a program.",
+            "syntax": "erase list of array variables",
+            "kind": 12
+        },
+        {
+            "name": "erdev($) variables",
+            "type": "",
+            "purpose": "To return the actual value (ERDEV) of a device error, and the name of the device (ERDEV$) causing the error.",
+            "syntax": "erdev",
+            "kind": 12
+        },
+        {
+            "name": "erl",
+            "type": "variable",
+            "purpose": "To return the error code (ERR) and line number (ERL) associated with an error.",
+            "syntax": "erl",
+            "kind": 8
+        },
+        {
+            "name": "err",
+            "type": "variable",
+            "purpose": "To return the error code (ERR) and line number (ERL) associated with an error.",
+            "syntax": "err",
+            "kind": 8
+        },
+        {
+            "name": "error",
+            "type": "statement",
+            "purpose": "To simulate the occurrence of an error, or to allow the user to define error codes.",
+            "syntax": "error integer expression",
+            "kind": 12
+        },
+        {
+            "name": "exp",
+            "type": "function",
+            "args": 1,
+            "pattern": "^exp(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return e (the base of natural logarithms) to the power of x.",
+            "syntax": "exp(x)",
+            "kind": 12
+        },
+        {
+            "name": "exterr",
+            "type": "function",
+            "args": 1,
+            "pattern": "^exterr(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return extended error information.",
+            "syntax": "exterr(n)",
+            "kind": 12
+        },
+        {
+            "name": "field",
+            "type": "statement",
+            "purpose": "To allocate space for variables in a random file buffer.",
+            "syntax": "field [#] filenum, width as stringvar [,width as stringvar]...",
+            "kind": 12
+        },
+        {
+            "name": "files",
+            "type": "command",
+            "purpose": "To print the names of the files residing on the specified drive.",
+            "syntax": "files [pathname]",
+            "kind": 12
+        },
+        {
+            "name": "fix",
+            "type": "function",
+            "args": 1,
+            "pattern": "^fix(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To truncate x to a whole number.",
+            "syntax": "fix(x)",
+            "kind": 12
+        },
+        {
+            "name": "for",
+            "type": "statement",
+            "purpose": "To execute a series of instructions a specified number of times in a loop.",
+            "syntax": "for variable=x to y [step z] ",
+            "kind": 12
+        },
+        {
+            "name": "fre",
+            "type": "function",
+            "args": 1,
+            "pattern": "^fre(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the number of available bytes in allocated string memory.",
+            "syntax": "fre(x)",
+            "kind": 12
+        },
+        {
+            "name": "get",
+            "type": "statement",
+            "purpose": "To read a record from a random disk file into a random buffer.",
+            "syntax": "get [#]file number[,record number]",
+            "kind": 12
+        },
+        {
+            "name": "get",
+            "type": "statement",
+            "purpose": "To transfer graphics images from the screen.",
+            "syntax": "get (x1,y1)-(x2,y2),array name",
+            "kind": 12
+        },
+        {
+            "name": "gosub-return",
+            "type": "statement",
+            "purpose": "To branch to, and return from, a subroutine.",
+            "syntax": "gosub line number",
+            "kind": 12
+        },
+        {
+            "name": "goto",
+            "type": "statement",
+            "purpose": "To branch unconditionally out of the normal program sequence to a specified line number.",
+            "syntax": "goto line number",
+            "kind": 12
+        },
+        {
+            "name": "hex$",
+            "type": "function",
+            "purpose": "To return a string which represents the hexadecimal value of the numeric argument.",
+            "syntax": "v$=hex$(x)",
+            "kind": 12
+        },
+        {
+            "name": "if",
+            "type": "statement",
+            "purpose": "To make a decision regarding program flow based on the result returned by an expression.",
+            "syntax": " if expression[,] goto line number[[,] else statement(s)]",
+            "kind": 12
+        },
+        {
+            "name": "inkey$",
+            "type": "variable",
+            "purpose": "To return one character read from the keyboard.",
+            "syntax": "v$=inkey$",
+            "kind": 8
+        },
+        {
+            "name": "inp",
+            "type": "function",
+            "args": 1,
+            "pattern": "^inp(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the byte read from machine port n.",
+            "syntax": "inp(n)",
+            "kind": 12
+        },
+        {
+            "name": "input",
+            "type": "statement",
+            "purpose": "To prepare the program for input from the terminal during program execution.",
+            "syntax": " input[;][prompt string,] list of variables",
+            "kind": 12
+        },
+        {
+            "name": "input#",
+            "type": "statement",
+            "purpose": "To read data items from a sequential file and assign them to program variables.",
+            "syntax": "input# file number, variable list",
+            "kind": 12
+        },
+        {
+            "name": "input$",
+            "type": "function",
+            "purpose": "To return a string of x characters read from the keyboard, or from file number.",
+            "syntax": "input$(x[,[#]file number)]",
+            "kind": 12
+        },
+        {
+            "name": "instr",
+            "type": "function",
+            "args": 3,
+            "pattern": "^instr(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To search for the first occurrence of string y$ in x$, and return the position at which the string is found.",
+            "syntax": "instr([n,]x$,y$)",
+            "kind": 12
+        },
+        {
+            "name": "int",
+            "type": "function",
+            "purpose": "To truncate an expression to a whole number.",
+            "syntax": "print int(98. 89)",
+            "kind": 12
+        },
+        {
+            "name": "ioctl",
+            "type": "statement",
+            "purpose": "To allow GW-BASIC to send a &quot;control data&quot; string to a character device driver anytime after the driver has been opened.",
+            "syntax": "ioctl[#]file number,string",
+            "kind": 12
+        },
+        {
+            "name": "ioctl$",
+            "type": "function",
+            "purpose": "To allow GW-BASIC to read a &quot;control data&quot; string from an open character device driver.",
+            "syntax": "ioctl$([#]file number)",
+            "kind": 12
+        },
+        {
+            "name": "key",
+            "type": "statement",
+            "purpose": "To allow rapid entry of as many as 15 characters into a program with one keystroke by redefining GW-BASIC special function keys.",
+            "syntax": "key list ",
+            "kind": 12
+        },
+        {
+            "name": "key(n)",
+            "type": "statement",
+            "purpose": "To initiate and terminate key capture in a GW-BASIC program.",
+            "syntax": "key(n) stop ",
+            "kind": 12
+        },
+        {
+            "name": "kill",
+            "type": "command",
+            "purpose": "To delete a file from a disk.",
+            "syntax": "kill filename",
+            "kind": 12
+        },
+        {
+            "name": "left$",
+            "type": "function",
+            "purpose": "To return a string that comprises the left-most n characters of x$.",
+            "syntax": "left$(x$,n)",
+            "kind": 12
+        },
+        {
+            "name": "len",
+            "type": "function",
+            "args": 1,
+            "pattern": "^len(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the number of characters in x$.",
+            "syntax": "len(x$)",
+            "kind": 12
+        },
+        {
+            "name": "let",
+            "type": "statement",
+            "purpose": "To assign the value of an expression to a variable.",
+            "syntax": "[let] variable=expression",
+            "kind": 12
+        },
+        {
+            "name": "line",
+            "type": "statement",
+            "purpose": "To draw lines and boxes on the screen.",
+            "syntax": "line [(x1,y1)]-(x2,y2) [,[attribute][,b[f]][,style]]",
+            "kind": 12
+        },
+        {
+            "name": "line input",
+            "type": "statement",
+            "purpose": "To input an entire line (up to 255 characters) from the keyboard into a string variable, ignoring delimiters.",
+            "syntax": "line input [;][prompt string;]string variable",
+            "kind": 12
+        },
+        {
+            "name": "line input#",
+            "type": "statement",
+            "purpose": "To read an entire line (up to 255 characters), without delimiters, from a sequential disk file to a string variable.",
+            "syntax": "line input# file number, string variable",
+            "kind": 12
+        },
+        {
+            "name": "list",
+            "type": "command",
+            "purpose": "To list all or part of a program to the screen, line printer, or file.",
+            "syntax": "list [line number-][,filename] ",
+            "kind": 12
+        },
+        {
+            "name": "llist",
+            "type": "command",
+            "purpose": "To list all or part of the program currently in memory to the line printer.",
+            "syntax": "llist [line number-] ",
+            "kind": 12
+        },
+        {
+            "name": "load",
+            "type": "command",
+            "purpose": "To load a file from diskette into memory.",
+            "syntax": "load filename[,r]",
+            "kind": 12
+        },
+        {
+            "name": "loc",
+            "type": "function",
+            "args": 1,
+            "pattern": "^loc(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the current position in the file.",
+            "syntax": "loc(file number)",
+            "kind": 12
+        },
+        {
+            "name": "locate",
+            "type": "statement",
+            "purpose": "To move the cursor to the specified position on the active screen. Optional parameters cause the cursor to blink on and off, and define the start and stop raster lines for the cursor. A raster line is the vertical or horizontal distance between two adjacent, addressable points on your screen.",
+            "syntax": "locate [row][,[col][,[cursor][,[start] [,stop]]]]",
+            "kind": 12
+        },
+        {
+            "name": "lock",
+            "type": "statement",
+            "purpose": "To restrict the access to all or part of a file that has been opened by another process. This is used in a multi-device environment, often referred to as a network or network environment.",
+            "syntax": "lock [#]n [,[record number] [to record number]]",
+            "kind": 12
+        },
+        {
+            "name": "lof",
+            "type": "function",
+            "args": 1,
+            "pattern": "^lof(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the length (number of bytes) allocated to the file.",
+            "syntax": "lof(file number)",
+            "kind": 12
+        },
+        {
+            "name": "log",
+            "type": "function",
+            "args": 1,
+            "pattern": "^log(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the natural logarithm of x.",
+            "syntax": "log(x)",
+            "kind": 12
+        },
+        {
+            "name": "lpos",
+            "type": "function",
+            "args": 1,
+            "pattern": "^lpos(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the current position of the line printer print head within the line printer buffer.",
+            "syntax": "lpos(x)",
+            "kind": 12
+        },
+        {
+            "name": "lprint",
+            "type": "statement",
+            "purpose": "To print data at the line printer.",
+            "syntax": "lprint using string exp; list of expressions[;]",
+            "kind": 12
+        },
+        {
+            "name": "lprint using",
+            "type": "statement",
+            "purpose": "To print data at the line printer.",
+            "syntax": "lprint using string exp; list of expressions[;]",
+            "kind": 12
+        },
+        {
+            "name": "lset",
+            "type": "statement",
+            "purpose": "To move data from memory to a random-file buffer and left- or right-justify it in preparation for a PUT statement.",
+            "syntax": "lset string variable=string expression",
+            "kind": 12
+        },
+        {
+            "name": "merge",
+            "type": "command",
+            "purpose": "To merge the lines from an ASCII program file into the program already in memory.",
+            "syntax": "merge filename",
+            "kind": 12
+        },
+        {
+            "name": "mid$",
+            "type": "function",
+            "purpose": "To return a string of m characters from x$ beginning with the nth character.",
+            "syntax": "mid$(x$,n[,m])",
+            "kind": 12
+        },
+        {
+            "name": "mid$",
+            "type": "statement",
+            "purpose": "To replace a portion of one string with another string.",
+            "syntax": "mid$(stringexp1,n[,m])=stringexp2",
+            "kind": 12
+        },
+        {
+            "name": "mkdir",
+            "type": "command",
+            "purpose": "To create a subdirectory.",
+            "syntax": "mkdir pathname",
+            "kind": 12
+        },
+        {
+            "name": "mkd$",
+            "type": "function",
+            "purpose": "To convert numeric values to string values.",
+            "syntax": "mkd$(double-precision expression) ",
+            "kind": 12
+        },
+        {
+            "name": "mki$",
+            "type": "function",
+            "purpose": "To convert numeric values to string values.",
+            "syntax": "mki$(integer expression)",
+            "kind": 12
+        },
+        {
+            "name": "mks$",
+            "type": "function",
+            "purpose": "To convert numeric values to string values.",
+            "syntax": "mks$(single-precision expression)",
+            "kind": 12
+        },
+        {
+            "name": "name",
+            "type": "command",
+            "purpose": "To change the name of a disk file.",
+            "syntax": "name old filename as new filename",
+            "kind": 12
+        },
+        {
+            "name": "new",
+            "type": "command",
+            "purpose": "To delete the program currently in memory and clear all variables.",
+            "syntax": "new",
+            "kind": 12
+        },
+        {
+            "name": "next",
+            "type": "statement",
+            "purpose": "To execute a series of instructions a specified number of times in a loop.",
+            "syntax": "next [variable][,variable...]",
+            "kind": 12
+        },
+        {
+            "name": "oct$",
+            "type": "function",
+            "purpose": "To convert a decimal value to an octal value.",
+            "syntax": "oct$(x)",
+            "kind": 12
+        },
+        {
+            "name": "on com(n)",
+            "type": "statement",
+            "purpose": "To create an event trap line number for a specified event (such as communications, pressing function or cursor control keys, using the light pen, or using joysticks).",
+            "syntax": "on event specifier gosub line number",
+            "kind": 12
+        },
+        {
+            "name": "on key(n)",
+            "type": "statement",
+            "purpose": "To create an event trap line number for a specified event (such as communications, pressing function or cursor control keys, using the light pen, or using joysticks).",
+            "syntax": "on event specifier gosub line number",
+            "kind": 12
+        },
+        {
+            "name": "on pen",
+            "type": "statement",
+            "purpose": "To create an event trap line number for a specified event (such as communications, pressing function or cursor control keys, using the light pen, or using joysticks).",
+            "syntax": "on event specifier gosub line number",
+            "kind": 12
+        },
+        {
+            "name": "on play(n)",
+            "type": "statement",
+            "purpose": "To create an event trap line number for a specified event (such as communications, pressing function or cursor control keys, using the light pen, or using joysticks).",
+            "syntax": "on event specifier gosub line number",
+            "kind": 12
+        },
+        {
+            "name": "on strig(n)",
+            "type": "statement",
+            "purpose": "To create an event trap line number for a specified event (such as communications, pressing function or cursor control keys, using the light pen, or using joysticks).",
+            "syntax": "on event specifier gosub line number",
+            "kind": 12
+        },
+        {
+            "name": "on timer(n)",
+            "type": "statement",
+            "purpose": "To create an event trap line number for a specified event (such as communications, pressing function or cursor control keys, using the light pen, or using joysticks).",
+            "syntax": "on event specifier gosub line number",
+            "kind": 12
+        },
+        {
+            "name": "on error goto",
+            "type": "statement",
+            "purpose": "To enable error trapping and specify the first line of the error-handling subroutine.",
+            "syntax": "on error goto line number",
+            "kind": 12
+        },
+        {
+            "name": "on-gosub",
+            "type": "statement",
+            "purpose": "To branch to one of several specified line numbers, depending on the value returned when an expression is evaluated.",
+            "syntax": "on expression goto line numbers",
+            "kind": 12
+        },
+        {
+            "name": "on-goto",
+            "type": "statement",
+            "purpose": "To branch to one of several specified line numbers, depending on the value returned when an expression is evaluated.",
+            "syntax": "on expression goto line numbers",
+            "kind": 12
+        },
+        {
+            "name": "open",
+            "type": "statement",
+            "purpose": "To establish input/output (I/O) to a file or device.",
+            "syntax": "open filename [for mode][access access][lock] as [#]file number [len=reclen]",
+            "kind": 12
+        },
+        {
+            "name": "open &quot;com(n)",
+            "type": "statement",
+            "purpose": "To allocate a buffer to support RS-232 asynchronous communications with other computers and peripheral devices in the same manner as OPEN for disk files.",
+            "syntax": "open &quot;com[n]:[speed][,parity][,data] [,stop][,rs][,cs[n]][,ds[n]][,cd[n]][,lf] [,pe]&quot; as [#]filenum [len=number]",
+            "kind": 12
+        },
+        {
+            "name": "option base",
+            "type": "statement",
+            "purpose": "To declare the minimum value for array subscripts.",
+            "syntax": "option base n",
+            "kind": 12
+        },
+        {
+            "name": "out",
+            "type": "statement",
+            "purpose": "To send a byte to a machine output port.",
+            "syntax": "out h,j",
+            "kind": 12
+        },
+        {
+            "name": "paint",
+            "type": "statement",
+            "purpose": "To fill in a graphics figure with the selected attribute.",
+            "syntax": "paint (x start,y start)[,paint attribute[,border attribute][,bckgrnd attribute]]",
+            "kind": 12
+        },
+        {
+            "name": "palette",
+            "type": "statement",
+            "purpose": "Changes one or more of the colors in the palette",
+            "syntax": "palette using integer-array-name (arrayindex)",
+            "kind": 12
+        },
+        {
+            "name": "palette using",
+            "type": "statement",
+            "purpose": "Changes one or more of the colors in the palette",
+            "syntax": "palette using integer-array-name (arrayindex)",
+            "kind": 12
+        },
+        {
+            "name": "pcopy",
+            "type": "command",
+            "purpose": "To copy one screen page to another in all screen modes.",
+            "syntax": "pcopy sourcepage, destinationpage",
+            "kind": 12
+        },
+        {
+            "name": "peek",
+            "type": "function",
+            "args": 1,
+            "pattern": "^peek(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To read from a specified memory location.",
+            "syntax": "peek(a)",
+            "kind": 12
+        },
+        {
+            "name": "pen",
+            "type": "function",
+            "purpose": "To read the light pen.",
+            "syntax": "pen stop ",
+            "kind": 12
+        },
+        {
+            "name": "play",
+            "type": "statement",
+            "purpose": "To play music by embedding a music macro language into the string data type.",
+            "syntax": "play string expression",
+            "kind": 12
+        },
+        {
+            "name": "play(n)",
+            "type": "function",
+            "purpose": "To return the number of notes currently in the background music queue.",
+            "syntax": "play(n)",
+            "kind": 12
+        },
+        {
+            "name": "pmap",
+            "type": "function",
+            "purpose": "To map expressions to logical or physical coordinates.",
+            "syntax": "x=pmap (exp,function)",
+            "kind": 12
+        },
+        {
+            "name": "point",
+            "type": "function",
+            "args": 1,
+            "pattern": "^point(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To read the color or attribute value of a pixel from the screen.",
+            "syntax": "point(function)",
+            "kind": 12
+        },
+        {
+            "name": "poke",
+            "type": "statement",
+            "purpose": "To write (poke) a byte of data into a memory location.",
+            "syntax": "poke a,b",
+            "kind": 12
+        },
+        {
+            "name": "pos",
+            "type": "function",
+            "args": 1,
+            "pattern": "^pos(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the current cursor position.",
+            "syntax": "pos(c)",
+            "kind": 12
+        },
+        {
+            "name": "preset",
+            "type": "statement",
+            "purpose": "To display a point at a specified place on the screen during use of the graphics mode.",
+            "syntax": "preset(x,y)[,color]",
+            "kind": 12
+        },
+        {
+            "name": "pset",
+            "type": "statement",
+            "purpose": "To display a point at a specified place on the screen during use of the graphics mode.",
+            "syntax": "pset(x,y)[,color]",
+            "kind": 12
+        },
+        {
+            "name": "print",
+            "type": "statement",
+            "purpose": "To output a display to the screen.",
+            "syntax": "print [list of expressions][;]",
+            "kind": 12
+        },
+        {
+            "name": "print using",
+            "type": "statement",
+            "purpose": "To print strings or numbers using a specified format.",
+            "syntax": "print using string expressions;list of expressions[;]",
+            "kind": 12
+        },
+        {
+            "name": "print#",
+            "type": "statement",
+            "purpose": "To write data to a sequential disk file.",
+            "syntax": "print#file number,[usingstring expressions;]list of expressions",
+            "kind": 12
+        },
+        {
+            "name": "print# using",
+            "type": "statement",
+            "purpose": "To write data to a sequential disk file.",
+            "syntax": "print#file number,[usingstring expressions;]list of expressions",
+            "kind": 12
+        },
+        {
+            "name": "put",
+            "type": "statement",
+            "purpose": "To write a record from a random buffer to a random disk file.",
+            "syntax": "put[#]file number[,record number]",
+            "kind": 12
+        },
+        {
+            "name": "put",
+            "type": "statement",
+            "purpose": "To transfer graphics images to the screen.",
+            "syntax": "put(x,y),array,[,action verb]",
+            "kind": 12
+        },
+        {
+            "name": "randomize",
+            "type": "statement",
+            "purpose": "To reseed the random number generator.",
+            "syntax": "randomize timer",
+            "kind": 12
+        },
+        {
+            "name": "read",
+            "type": "statement",
+            "purpose": "To read values from a DATA statement and assign them to variables.",
+            "syntax": "read list of variables",
+            "kind": 12
+        },
+        {
+            "name": "rem",
+            "type": "statement",
+            "purpose": "To allow explanatory remarks to be inserted in a program.",
+            "syntax": "rem[comment]",
+            "kind": 12
+        },
+        {
+            "name": "renum",
+            "type": "command",
+            "purpose": "To renumber program lines.",
+            "syntax": "renum[new number],[old number][,incrementr]]",
+            "kind": 12
+        },
+        {
+            "name": "reset",
+            "type": "command",
+            "purpose": "To close all disk files and write the directory information to a diskette before it is removed from a disk drive.",
+            "syntax": "reset",
+            "kind": 12
+        },
+        {
+            "name": "restore",
+            "type": "statement",
+            "purpose": "To allow DATA statements to be reread from a specified line.",
+            "syntax": "restore[line number]",
+            "kind": 12
+        },
+        {
+            "name": "resume",
+            "type": "statement",
+            "purpose": "To continue program execution after an error-recovery procedure has been �performed.",
+            "syntax": "resume line number ",
+            "kind": 12
+        },
+        {
+            "name": "return",
+            "type": "statement",
+            "purpose": "To return from a subroutine.",
+            "syntax": "return [line number]",
+            "kind": 12
+        },
+        {
+            "name": "right$",
+            "type": "function",
+            "purpose": "To return the rightmost n characters of string x$.",
+            "syntax": "right$(x$,n)",
+            "kind": 12
+        },
+        {
+            "name": "rmdir",
+            "type": "command",
+            "purpose": "To delete a subdirectory.",
+            "syntax": "rmdir pathname",
+            "kind": 12
+        },
+        {
+            "name": "rnd",
+            "type": "function",
+            "purpose": "To return a random number between 0 and 1.",
+            "syntax": "rnd[(x)]",
+            "kind": 12
+        },
+        {
+            "name": "rset",
+            "type": "statement",
+            "purpose": "To move data from memory to a random-file buffer and left- or right-justify it in preparation for a PUT statement.",
+            "syntax": "rset string variable=string expression",
+            "kind": 12
+        },
+        {
+            "name": "run",
+            "type": "command",
+            "purpose": "To execute the program currently in memory, or to load a file from the diskette into memory and run it.",
+            "syntax": "run filename[,r]",
+            "kind": 12
+        },
+        {
+            "name": "save",
+            "type": "command",
+            "purpose": "To save a program file on diskette.",
+            "syntax": "save filename,[,p]",
+            "kind": 12
+        },
+        {
+            "name": "screen",
+            "type": "function",
+            "purpose": "To return the ASCII code (0-255) for the character at the specified row (line) and column on the screen.",
+            "syntax": "x=screen(row,col[,z])",
+            "kind": 12
+        },
+        {
+            "name": "screen",
+            "type": "statement",
+            "purpose": "To set the specifications for the display screen.",
+            "syntax": "screen [mode] [,[colorswitch]][,[apage]][,[vpage]]",
+            "kind": 12
+        },
+        {
+            "name": "sgn",
+            "type": "function",
+            "args": 1,
+            "pattern": "^sgn(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the sign of x.",
+            "syntax": "sgn(x)",
+            "kind": 12
+        },
+        {
+            "name": "shell",
+            "type": "statement",
+            "purpose": "To load and execute another program or batch file. When the program finishes, control returns to the GW-BASIC program at the statement following the SHELL statement. A program executed under control of GW-BASIC is referred to as a child process.",
+            "syntax": "shell [string]",
+            "kind": 12
+        },
+        {
+            "name": "sin",
+            "type": "function",
+            "args": 1,
+            "pattern": "^sin(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To calculate the trigonometric sine of x, in radians.",
+            "syntax": "sin(x)",
+            "kind": 12
+        },
+        {
+            "name": "sound",
+            "type": "statement",
+            "purpose": "To generate sound through the speaker.",
+            "syntax": "sound freq,duration",
+            "kind": 12
+        },
+        {
+            "name": "space$",
+            "type": "function",
+            "purpose": "To return a string of x spaces.",
+            "syntax": "space$(x)",
+            "kind": 12
+        },
+        {
+            "name": "spc",
+            "type": "function",
+            "args": 1,
+            "pattern": "^spc(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To skip a specified number of spaces in a PRINT or an LPRINT statement.",
+            "syntax": "spc(n)",
+            "kind": 12
+        },
+        {
+            "name": "sqr",
+            "type": "function",
+            "args": 1,
+            "pattern": "^sqr(\\((.+?,)*?.+?\\))?$",
+            "purpose": "Returns the square root of x.",
+            "syntax": "sqr(x)",
+            "kind": 12
+        },
+        {
+            "name": "stick",
+            "type": "function",
+            "purpose": "To return the x and y coordinates of two joysticks.",
+            "syntax": "x=stick(n)",
+            "kind": 12
+        },
+        {
+            "name": "stop",
+            "type": "statement",
+            "purpose": "To terminate program execution and return to command level.",
+            "syntax": "stop",
+            "kind": 12
+        },
+        {
+            "name": "str$",
+            "type": "function",
+            "purpose": "To return a string representation of the value of x.",
+            "syntax": "str$(x)",
+            "kind": 12
+        },
+        {
+            "name": "strig",
+            "type": "statement",
+            "purpose": "To return the status of the joystick triggers.",
+            "syntax": "strig off",
+            "kind": 12
+        },
+        {
+            "name": "strig(n)",
+            "type": "statement",
+            "purpose": "To allow the use of a joystick by enabling or disabling the trapping of its buttons.",
+            "syntax": "strig(n) stop",
+            "kind": 12
+        },
+        {
+            "name": "string$",
+            "type": "function",
+            "purpose": "To return",
+            "syntax": "string$(n,x$)",
+            "kind": 12
+        },
+        {
+            "name": "swap",
+            "type": "statement",
+            "purpose": "To exchange the values of two variables.",
+            "syntax": "swap variable1,variable2",
+            "kind": 12
+        },
+        {
+            "name": "system",
+            "type": "command",
+            "purpose": "To return to MS-DOS.",
+            "syntax": "system",
+            "kind": 12
+        },
+        {
+            "name": "tab",
+            "type": "function",
+            "args": 1,
+            "pattern": "^tab(\\((.+?,)*?.+?\\))?$",
+            "purpose": "Spaces to position n on the screen.",
+            "syntax": "tab(n)",
+            "kind": 12
+        },
+        {
+            "name": "tan",
+            "type": "function",
+            "args": 1,
+            "pattern": "^tan(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To calculate the trigonometric tangent of x, in radians.",
+            "syntax": "tan(x)",
+            "kind": 12
+        },
+        {
+            "name": "time$",
+            "type": "statement",
+            "purpose": "To set or retrieve the current time.",
+            "syntax": "time$ = string exp",
+            "kind": 12
+        },
+        {
+            "name": "timer",
+            "type": "function",
+            "args": 0,
+            "pattern": "^timer(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return single-precision floating-point numbers representing the elapsed number of seconds since midnight or system reset.",
+            "syntax": "timer",
+            "kind": 12
+        },
+        {
+            "name": "troff",
+            "type": "command",
+            "purpose": "To trace the execution of program statements.",
+            "syntax": "troff",
+            "kind": 12
+        },
+        {
+            "name": "tron",
+            "type": "command",
+            "purpose": "To trace the execution of program statements.",
+            "syntax": "tron",
+            "kind": 12
+        },
+        {
+            "name": "unlock",
+            "type": "statement",
+            "purpose": "To release locks that have been applied to an opened file. This is used in a multi-device environment, often referred to as a network or network environment.",
+            "syntax": "unlock [#]n [,[record number] [to record number]]",
+            "kind": 12
+        },
+        {
+            "name": "usr",
+            "type": "function",
+            "purpose": "To call an assembly language subroutine.",
+            "syntax": "usr[n](argument)",
+            "kind": 12
+        },
+        {
+            "name": "val",
+            "type": "function",
+            "args": 1,
+            "pattern": "^val(\\((.+?,)*?.+?\\))?$",
+            "purpose": "Returns the numerical value of string x$.",
+            "syntax": "val(x$)",
+            "kind": 12
+        },
+        {
+            "name": "varptr",
+            "type": "function",
+            "args": 1,
+            "pattern": "^varptr(\\((.+?,)*?.+?\\))?$",
+            "purpose": "To return the address in memory of the variable or file control block (FCB).",
+            "syntax": "varptr(#file number)",
+            "kind": 12
+        },
+        {
+            "name": "varptr$",
+            "type": "function",
+            "purpose": "To return a character form of the offset of a variable in memory.",
+            "syntax": "varptr$(variable)",
+            "kind": 12
+        },
+        {
+            "name": "view",
+            "type": "statement",
+            "purpose": "To define a physical viewport limit from x1,y1 (upper-left x,y coordinates) to x2,y2 (lower-right x,y coordinates).",
+            "syntax": "view [[screen][(x1,y1)-(x2,y2) [,[fill][,[border]]]]",
+            "kind": 12
+        },
+        {
+            "name": "view print",
+            "type": "statement",
+            "purpose": "To set the boundaries of the screen text window.",
+            "syntax": "view print [topline to bottomline]",
+            "kind": 12
+        },
+        {
+            "name": "wait",
+            "type": "statement",
+            "purpose": "To suspend program execution while monitoring the status of a machine input port.",
+            "syntax": "wait port number, n[,j]",
+            "kind": 12
+        },
+        {
+            "name": "while-wend",
+            "type": "statement",
+            "purpose": "To execute a series of statements in a loop as long as a given condition is true.",
+            "syntax": "while expression",
+            "kind": 12
+        },
+        {
+            "name": "width",
+            "type": "statement",
+            "purpose": "To set the printed line width in number of characters for the screen and line printer.",
+            "syntax": "width &quot;dev&quot;, size",
+            "kind": 12
+        },
+        {
+            "name": "window",
+            "type": "statement",
+            "purpose": "To draw lines, graphics, and objects in space not bounded by the physical �limits of the screen.",
+            "syntax": "window[[screen](x1,y1)-(x2,y2)]",
+            "kind": 12
+        },
+        {
+            "name": "write",
+            "type": "statement",
+            "purpose": "To output data to the screen.",
+            "syntax": "write[list of expressions]",
+            "kind": 12
+        },
+        {
+            "name": "write#",
+            "type": "statement",
+            "purpose": "To write data to a sequential file.",
+            "syntax": "write #filenum, list of expressions",
+            "kind": 12
+        },
+        {
+            "name": "mod",
+            "type": "arithmetic operator",
+            "args": 0,
+            "purpose": "Get the remainder of the division",
+            "syntax": "a mod b",
+            "kind": 21
+        },
+        {
+            "name": "not",
+            "type": "logical operator",
+            "args": 0,
+            "purpose": "Logical negation",
+            "syntax": "NOT a",
+            "kind": 21
+        },
+        {
+            "name": "and",
+            "type": "logical operator",
+            "args": 0,
+            "purpose": "Logical and",
+            "syntax": "a AND b",
+            "kind": 21
+        },
+        {
+            "name": "or",
+            "type": "logical operator",
+            "args": 0,
+            "purpose": "Logical or",
+            "syntax": "a OR b",
+            "kind": 21
+        },
+        {
+            "name": "xor",
+            "type": "logical operator",
+            "args": 0,
+            "purpose": "Logical xor",
+            "syntax": "a XOR b",
+            "kind": 21
+        },
+        {
+            "name": "eqv",
+            "type": "logical operator",
+            "args": 0,
+            "purpose": "Logical equivalence",
+            "syntax": "a EQV b",
+            "kind": 21
+        },
+        {
+            "name": "imp",
+            "type": "logical operator",
+            "args": 0,
+            "purpose": "Logical implication",
+            "syntax": "a IMP b",
+            "kind": 21
+        }
+    ]
 }

@@ -78,3 +78,11 @@ void reverse_charr(char* arr, int sz){
 		*r = tmp;
 	}
 }
+
+ll max(ll val1, ll val2){
+	return val1 > val2 ? val1 : val2;
+}
+
+ll min(ll val1, ll val2){
+	return val1 < val2 ? val1 : val2;
+}

@@ -12,20 +12,36 @@
 #include "cstring.h"
 #include "vector.h"
 #include "parser.h"
+#include "cstring.h"
 
-#define LOG_FILE_PATH "/home/danil/CLionProjects/gw_basic_server/sandbox/log.txt"
-#define CONFIG_FILE_PATH "data/config.json"
+char* LOG_FILE = "";
+char* CONFIG_FILE = "";
 
 extern logger* Logger;
 
+void parse_args(int argc, char* argv[]) {
+
+	for (int i = 1; i<argc; i++) {
+		vector* values = strsplit(argv[i], '=');
+		if (values->size==2)
+			if (!strcmp((char*)values->get(values, 0), "config_file"))
+				CONFIG_FILE = (char*)values->get(values, 1);
+			else if (!strcmp((char*)values->get(values, 0), "log_file"))
+				LOG_FILE = (char*)values->get(values, 1);
+	}
+
+}
+
 int main(int argc, char* argv[]) {
 
-	initialize_logger(LOG_FILE_PATH);
+	parse_args(argc, argv);
+
+	initialize_logger(LOG_FILE);
 
 	message* msg = create_message();
-	language_server* ls = create_language_server();
+	language_server* ls = create_language_server(CONFIG_FILE);
 
-	FILE* fptr = fopen("/home/danil/CLionProjects/gw_basic_server/sandbox/log2.txt", "a");
+	FILE* fptr = fopen("/home/danil/CLionProjects/gw_basic_server/log2.txt", "a");
 
 	while (1) {
 

@@ -38,9 +38,9 @@ static void set_at(string* self, int pos, char ch) {
 }
 
 static char char_at(string* self, int pos) {
-	void *item = self->chars->get(self->chars, pos);
-	if(item)
-		return *(char*) item;
+	void* item = self->chars->get(self->chars, pos);
+	if (item)
+		return *(char*)item;
 	return 0;
 }
 
@@ -49,11 +49,18 @@ static char* get_chars(string* self) {
 	return self->_chars;
 }
 
-static int find(string* self, string* oth) {
-	return strstr(self->get_chars(self), oth->get_chars(oth)) - self->get_chars(self);
+char* get_chars_and_terminate(string* self) {
+	char* res = get_chars(self);
+	free_vector(self->chars);
+	free(self);
+	return res;
 }
 
-static void reverse(string *self){
+static int find(string* self, string* oth) {
+	return strstr(self->get_chars(self), oth->get_chars(oth))-self->get_chars(self);
+}
+
+static void reverse(string* self) {
 	self->chars->reverse(self->chars);
 }
 
@@ -65,6 +72,7 @@ static string* init_string() {
 	self->_chars = malloc(sizeof(char));
 
 	self->get_chars = get_chars;
+	self->get_chars_and_terminate = get_chars_and_terminate;
 	self->char_at = char_at;
 	self->set_at = set_at;
 	self->conc = conc;
@@ -174,9 +182,9 @@ void strlower(char* str) {
 		str++;
 	}
 }
-char* copystr(char* str) {
-	if(str == NULL){
-		char* emp = malloc(sizeof (char));
+char* copystr(const char* str) {
+	if (str==NULL) {
+		char* emp = malloc(sizeof(char));
 		emp[0] = 0;
 		return emp;
 	}
@@ -184,28 +192,49 @@ char* copystr(char* str) {
 }
 
 vector* get_lines(char* str) {
-	vector *vect = create_vector();
-	string *temp_str = get_string();
-	while(*str){
-		if(isprint(*str))
+	vector* vect = create_vector();
+	string* temp_str = get_string();
+	while (*str) {
+		if (isprint(*str))
 			temp_str->add(temp_str, *str);
-		if(!*(str+1)
-		|| (*str == '\r' && *(str+1) == '\n')
-		|| *str == '\n'){
+		if (!*(str+1)
+				|| (*str=='\r' && *(str+1)=='\n')
+				|| *str=='\n') {
 			vect->push(vect, copystr(temp_str->get_chars(temp_str)));
 			free_string(temp_str);
-			if(*(str+1))
+			if (*(str+1))
 				temp_str = get_string();
 		}
 		str++;
 	}
 	return vect;
 }
+char* substr(char* str, int begin, int end) {
+	char* res = malloc(sizeof(char)*(end-begin+1+1));
+	strncpy(res, str, end-begin+1);
+	res[end-begin+1] = 0;
+	return res;
+}
+vector* strsplit(char* str, char tok) {
+	vector* tokens = create_vector();
+	char* begin = str;
+	while (*str) {
+		if (*str==tok) {
+			if (str-begin)
+				tokens->push(tokens, substr(begin, 0, str-begin-1));
+			begin = str+1;
+		}
+		str++;
+	}
+	if (str-begin)
+		tokens->push(tokens, substr(begin, 0, str-begin-1));
+	return tokens;
+}
 
 static int create_wtree_node(wtree* self, void* payload, char ch, int parent) {
 	const int MAX_SYMBOLS = WORDS_END_SYMBOL-WORDS_BEGIN_SYMBOL+1;
 	int* node = malloc(sizeof(int)*MAX_SYMBOLS);
-	memset(node, -1, MAX_SYMBOLS*sizeof(int));
+	memset(node, 0, MAX_SYMBOLS*sizeof(int));
 	self->tree[self->size] = node;
 	self->parent[self->size] = parent;
 	self->chars[self->size] = ch;
@@ -230,7 +259,7 @@ static void add_wtree(wtree* self, const char* str, void* payload) {
 	if (curr!=self->tree)
 		self->terminate[curr-self->tree] = payload;
 }
-static int find_ind(wtree* self, const char* str){
+static int find_ind(wtree* self, const char* str) {
 	int** curr = self->tree;
 	while (isprint(*str)) {
 		char ch = *str-WORDS_BEGIN_SYMBOL;
@@ -244,24 +273,44 @@ static int find_ind(wtree* self, const char* str){
 
 static void* find_wtree(wtree* self, const char* str) {
 	int ind = find_ind(self, str);
-	if(ind != -1)
+	if (ind!=-1)
 		return self->terminate[ind];
 	return NULL;
 }
 
-wtree* create_wtree() {
+static void* walk(wtree* self, const char* str) {
+	int curr = 0;
+	while (*str && (curr = self->tree[curr][*str]));
+	return self->terminate[curr];
+}
+
+void* walk_path(wtree* self, const char* str) {
+	int curr = 0;
+	string* path = get_string();
+	while (*str && (curr = self->tree[curr][*str]))
+		path->add(path, self->chars[curr]);
+	return path->get_chars_and_terminate(path);
+}
+
+wtree* create_wtree_sized(size_t size) {
 	wtree* self = malloc(sizeof(wtree));
-	self->tree = malloc(sizeof(int*)*WORD_TREE_SIZE);
-	self->parent = malloc(sizeof(int)*WORD_TREE_SIZE);
-	self->chars = malloc(sizeof(char)*WORD_TREE_SIZE);
-	self->terminate = malloc(sizeof(void*)*WORD_TREE_SIZE);
-	self->edges = malloc(sizeof(lvector*)*WORD_TREE_SIZE);
+	self->tree = malloc(sizeof(int*)*size);
+	self->parent = malloc(sizeof(int)*size);
+	self->chars = malloc(sizeof(char)*size);
+	self->terminate = malloc(sizeof(void*)*size);
+	self->edges = malloc(sizeof(lvector*)*size);
 	self->size = 0;
 	create_wtree_node(self, NULL, 0, -1);
 	self->add = add_wtree;
 	self->find = find_wtree;
-	self->find_ind =find_ind;
+	self->find_ind = find_ind;
+	self->walk = walk;
+	self->walk_path = walk_path;
 	return self;
+}
+
+wtree* create_wtree() {
+	return create_wtree_sized(WORD_TREE_SIZE);
 }
 void free_wtree(wtree* self) {
 	for (int i = 0; i<self->size; ++i) {

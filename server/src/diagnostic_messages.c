@@ -4,13 +4,24 @@
 
 #include "diagnostic_messages.h"
 
-diagnostic* create_diagnostic(){
-	diagnostic *dgn = malloc(sizeof (diagnostic));
+diagnostic* create_diagnostic() {
+	diagnostic* dgn = malloc(sizeof(diagnostic));
 	return dgn;
 }
 
-diagnostic* too_long_line(int line, int last_character){
-	diagnostic *dgn = create_diagnostic();
+void free_diagnostic_item(diagnostic* _diagnostic) {
+	free(_diagnostic->message);
+	free(_diagnostic);
+}
+void free_diagnostic_items(vector* items) {
+	for (int i = 0; i<items->size; ++i) {
+		free_diagnostic_item(items->get(items, i));
+	}
+	free_vector_no_values(items);
+}
+
+diagnostic* too_long_line(int line, int last_character) {
+	diagnostic* dgn = create_diagnostic();
 	dgn->l = 0;
 	dgn->r = last_character;
 	dgn->line = line;
@@ -19,8 +30,8 @@ diagnostic* too_long_line(int line, int last_character){
 	return dgn;
 }
 
-diagnostic* must_begin_number(int line, int last_character){
-	diagnostic *dgn = create_diagnostic();
+diagnostic* must_begin_number(int line, int last_character) {
+	diagnostic* dgn = create_diagnostic();
 	dgn->l = 0;
 	dgn->r = last_character;
 	dgn->line = line;

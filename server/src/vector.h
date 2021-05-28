@@ -5,7 +5,7 @@
 #ifndef GW_BASIC_SERVER_VECTOR_H
 #define GW_BASIC_SERVER_VECTOR_H
 
-#include <glob.h>
+//#include <glob.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include "stdio.h"

@@ -6,6 +6,7 @@
 #define GW_BASIC_SERVER_DIAGNOSTIC_MESSAGES_H
 
 #include "stdlib.h"
+#include "vector.h"
 
 typedef enum {
 	Error,
@@ -23,5 +24,7 @@ struct diagnostic {
 
 diagnostic* too_long_line(int line, int last_character);
 diagnostic* must_begin_number(int line, int last_character);
+void free_diagnostic_item(diagnostic* _diagnostic);
+void free_diagnostic_items(vector* items);
 
 #endif //GW_BASIC_SERVER_DIAGNOSTIC_MESSAGES_H

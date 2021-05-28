@@ -5,7 +5,9 @@
 #ifndef GW_BASIC_SERVER_CSTRING_H
 #define GW_BASIC_SERVER_CSTRING_H
 
-#include <glob.h>
+#define PCRE_STATIC
+
+//#include <glob.h>
 #include <stdlib.h>
 #include "string.h"
 #include <pcre.h>
@@ -31,6 +33,7 @@ struct string {
     string* (*conc)(string*, string*);
     void (*set_at)(string *, int, char);
     char* (*get_chars)(string *);
+    char* (*get_chars_and_terminate)(string *);
     char (*char_at)(string *, int);
 	void (*reverse)(string*);
 };
@@ -47,9 +50,12 @@ struct wtree{
 	size_t size;
 	void (*add)(wtree*, const char*, void*);
 	void* (*find)(wtree*,const char*);
+	void* (*walk)(wtree*, const char*);
+	void* (*walk_path)(wtree*, const char*);
 	int (*find_ind)(wtree*, const char*);
 };
 
+wtree* create_wtree_sized(size_t size);
 wtree* create_wtree();
 void free_wtree(wtree* self);
 
@@ -61,8 +67,11 @@ void remove_spaces(char *str);
 char* read_file(const char* filename);
 
 vector * get_lines(char *str);
+vector *strsplit(char *str, char tok);
+char *substr(char * str, int begin, int end);
 int is_eol(char ch);
 void strlower(char *str);
-char * copystr(char * str);
+char * copystr(const char * str);
+
 
 #endif //GW_BASIC_SERVER_CSTRING_H

@@ -89,7 +89,7 @@ vector* create_vector_sized(size_t size, void* val) {
 	vect->push = push;
 	vect->set = set;
 	vect->get = get;
-	vect->get = last;
+	vect->last = last;
 	vect->pop = pop;
 	vect->fill = fill;
 	vect->merge = merge;

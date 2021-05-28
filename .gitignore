@@ -52,6 +52,7 @@ Mkfile.old
 dkms.conf
 
 cmake-build-debug/**
+cmake-build-windows/**
 .idea/**
 **/node_modules/**
 .vscode/**
@@ -60,4 +61,5 @@ cmake-build-debug/**
 .eslintrc.js
 pcbasic-v1.2.14/**
 **/out/**
+**/outw/**
 **/sandbox/**

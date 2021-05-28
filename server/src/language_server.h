@@ -23,12 +23,13 @@ struct language_server {
 	gwparser* parser;
 	map * documents;
 	char *send_message_buf;
+	json_value *config;
     _Bool (*process)(language_server *, const char *, const size_t);
 };
 
 extern logger *Logger;
 
-language_server *create_language_server();
+language_server *create_language_server(char *config_file);
 
 void free_language_server(language_server *self);
 
