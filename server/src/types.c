@@ -60,8 +60,9 @@ int* wrapi(int val){
 }
 
 char* wrapc(char val){
-	char *char_wrapper = malloc(sizeof (char));
+	char *char_wrapper = malloc(sizeof (char) * 2);
 	*char_wrapper = val;
+	*(char_wrapper+1) = 0;
 	return char_wrapper;
 }
 

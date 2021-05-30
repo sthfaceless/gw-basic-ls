@@ -4,17 +4,54 @@
 
 #include "parser.h"
 
-static completionItem* get_completion_item(const char *name,const token_t kind){
-	completionItem *item = malloc(sizeof (completionItem));
+completion_t map_token_type_to_completion(token_t type){
+	static completion_t* mapper = NULL;
+	if (mapper == NULL) {
+
+		mapper = malloc(sizeof(completion_t) * 64);
+
+		/*
+		 * Default types
+		 * */
+		mapper[Namespace] = CompletionModule;
+		mapper[Type] = CompletionTypeParameter;
+		mapper[Enum] = CompletionEnum;
+		mapper[Interface] = CompletionInterface;
+		mapper[Struct] = CompletionStruct;
+		mapper[TypeParameter] = CompletionTypeParameter;
+		mapper[Parameter] = CompletionVariable;
+		mapper[Variable] = CompletionVariable;
+		mapper[Property] = CompletionProperty;
+		mapper[EnumMember] = CompletionEnumMember;
+		mapper[Event] = CompletionEvent;
+		mapper[Function] = CompletionFunction;
+		mapper[Method] = CompletionMethod;
+		mapper[Macro] = CompletionSnippet;
+		mapper[Keyword] = CompletionKeyword;
+		mapper[Modifier] = CompletionUnit;
+		mapper[Comment] = CompletionText;
+		mapper[String] = CompletionText;
+		mapper[Number] = CompletionUnit;
+		mapper[Regexp] = CompletionText;
+		mapper[Operator] = CompletionOperator;
+		mapper[Unknown] = CompletionUnknown;
+
+	}
+
+	return mapper[map_type_to_semantic_token(type)];
+}
+
+static completionItem* get_completion_item(const char* name, const token_t kind) {
+	completionItem* item = malloc(sizeof(completionItem));
 	item->name = copystr(name);
-	item->kind = kind;
+	item->kind = map_token_type_to_completion(kind);
 	return item;
 }
-void free_completion_item(completionItem* item){
+void free_completion_item(completionItem* item) {
 	free(item->name);
 	free(item);
 }
-void free_completion_items(vector* items){
+void free_completion_items(vector* items) {
 	for (int i = 0; i<items->size; ++i) {
 		free_completion_item(items->get(items, i));
 	}
@@ -27,8 +64,6 @@ static vector* completion_bfs(wtree* tree, char* str) {
 	if (root==-1)
 		return create_vector_reserved(0);
 
-	int strend = strlen(str)-1;
-
 	lvector* queue = create_lvector();
 	vector* vect = create_vector();
 	queue->push(queue, &root);
@@ -36,7 +71,7 @@ static vector* completion_bfs(wtree* tree, char* str) {
 		int vertex = *(int*)queue->get_last(queue);
 		queue->pop(queue);
 		if (vertex!=root && tree->terminate[vertex]) {
-			gwkeyword *keyword = tree->terminate[vertex];
+			gwkeyword* keyword = tree->terminate[vertex];
 			vect->push(vect, get_completion_item(keyword->name, keyword->kind));
 		}
 		lvector* edges = tree->edges[vertex];
@@ -103,7 +138,12 @@ static vector* make_completions(gwparser* self, char* str, int line, int pos) {
 			token* tok = create_token(index_str, 0, 0, 0, 0);
 			tok->kind = Number;
 
-			completions = create_vector_from(1, get_completion_item(index_str, Number));
+			completions = create_vector_reserved(4);
+			completions->push(completions, get_completion_item(index_str, Number));
+			if (next_line_number==-1) {
+				gwkeyword* run_sentence_keyword = self->_tokenizer->keywords->find(self->_tokenizer->keywords, "run");
+				completions->push(completions, get_completion_item(run_sentence_keyword->name, Keyword));
+			}
 		}
 	}
 	free_tokens(tokens);
@@ -111,9 +151,9 @@ static vector* make_completions(gwparser* self, char* str, int line, int pos) {
 	return completions ? completions : create_vector_reserved(0);
 }
 
-vector* validate(gwparser* self, char* text) {
+static vector* validate(gwparser* self, char* text) {
 
-	if (!strlen(text))
+	if (!*text)
 		return create_vector_reserved(0);
 
 	vector* messages = create_vector();
@@ -131,8 +171,12 @@ vector* validate(gwparser* self, char* text) {
 			}
 		}
 
-		if (!tokens_line->size || ((token*)tokens_line->get(tokens_line, 0))->kind!=Number) {
-			messages->push(messages, must_begin_number(i, last_index));
+		if (tokens_line->size) {
+			token *first_line_token = tokens_line->get(tokens_line, 0);
+			if(first_line_token->kind != LineNumber)
+				messages->push(messages, must_begin_number(i, last_index));
+			else if(atoll(first_line_token->str) > 65529)
+				messages->push(messages, begin_number_too_large(i, first_line_token->l, first_line_token->r));
 		}
 
 	}
@@ -140,7 +184,6 @@ vector* validate(gwparser* self, char* text) {
 
 	return messages;
 }
-
 
 gwparser* init_parser(json_value* config) {
 	gwparser* self = malloc(sizeof(gwparser));

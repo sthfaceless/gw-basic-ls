@@ -19,7 +19,12 @@ function getNameType(tokens){
         }
     }
     name = name.trim();
+    //.replace(/&[a-z|0-9]+;/g, "")
     return {name, type};
+}
+
+const particularTypes = {
+    'dim': 46
 }
 
 function addMoreInfo(href, info) {
@@ -29,9 +34,9 @@ function addMoreInfo(href, info) {
             console.log(href);
 
             const description = parse(body);
-            let purpose = description.querySelectorAll('p')[0].innerText.replace(/<[^>]*>/g, "");
+            let purpose = description.querySelectorAll('p')[0].innerText.replace(/<[^>]*>/g, "").replace(/&[A-z|0-9]+;/g, "");
 
-            let syntaxes = description.querySelectorAll('pre')[0].innerText.replace(/<[^>]*>/g, "").toLowerCase().split('\n');
+            let syntaxes = description.querySelectorAll('pre')[0].innerText.replace(/<[^>]*>/g, "").toLowerCase().replace(/&[a-z|0-9]+;/g, "").split('\n');
             let syntax = syntaxes[0].replace(/^v=/g, "");
             for(let _syntax of syntaxes) {
                 if (_syntax.includes(info.name))
@@ -44,7 +49,9 @@ function addMoreInfo(href, info) {
                 info = {...info, args, pattern};
             }
 
-            info = {...info, purpose, syntax, kind: info.type === 'variable' ? 13 : 12};
+            info = {...info, purpose, syntax, kind: info.type === 'variable' ? 8 : 12};
+            if(particularTypes[info.name])
+                info.kind = particularTypes[info.name];
             config.keywords.push(info);
         } else {
             console.log("Произошла ошибка: " + error);
@@ -55,7 +62,7 @@ function addMoreInfo(href, info) {
 function process_keywords(list, curr){
     if(curr < list.length){
         const element = list[curr];
-        const tokens = element.innerText.toLowerCase().split(' '),
+        const tokens = element.innerText.toLowerCase().replace(/&[a-z|0-9]+;/g, "").split(' '),
             href = element.attrs['href'];
 
         let info = getNameType(tokens);
@@ -70,7 +77,8 @@ request(URI + "index2.html", (error, response, body) => {
         const root = parse(body);
         const list = root.querySelectorAll('font[size="-1"]')[1].querySelectorAll('a');
 
-        config.keywords = [];
+        if(!config.keywords.length)
+            config.keywords = [];
         process_keywords(list, 0);
 
     } else {

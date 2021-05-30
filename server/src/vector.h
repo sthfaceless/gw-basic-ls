@@ -83,12 +83,18 @@ struct lvector {
 	iterator* (* iterator)(lvector*);
 };
 
+void merge_nodes(lvector* list, lnode *firstNode, lnode *nextNode, void* val);
+void split_node(lvector* list, lnode *node, void* val1, void *val2);
+void extract_node(lvector* list, lnode *node);
 lvector* create_lvector();
 lvector* create_lvector_with(void** values, size_t size);
 lvector* create_lvector_from(int args, ...);
 
 void free_lvector(lvector* self);
 void free_lvector_no_values(lvector* self);
+
+vector* cast_ltovector(lvector* vect);
+lvector* cast_vtolector(vector* vect);
 
 void arrcopy(void** dest, void** src, size_t size);
 void vectcopy(vector* dest, vector* src);

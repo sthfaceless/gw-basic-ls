@@ -51,12 +51,16 @@ struct wtree{
 	void (*add)(wtree*, const char*, void*);
 	void* (*find)(wtree*,const char*);
 	void* (*walk)(wtree*, const char*);
+	void* (*vwalk)(int, wtree*, const char*);
 	void* (*walk_path)(wtree*, const char*);
+	void* (*vwalk_path)(int, wtree*, const char*);
+	int (*vfind)(int, wtree*,const char*);
 	int (*find_ind)(wtree*, const char*);
 };
 
 wtree* create_wtree_sized(size_t size);
 wtree* create_wtree();
+char cast_char_to_wtree_edge(char ch);
 void free_wtree(wtree* self);
 
 vector* match(const char *str, char *pattern);
@@ -71,6 +75,8 @@ vector *strsplit(char *str, char tok);
 char *substr(char * str, int begin, int end);
 int is_eol(char ch);
 void strlower(char *str);
+char* conc(char *str1, char *str2);
+char* concd(char *str1, char *str2, char *delim);
 char * copystr(const char * str);
 
 

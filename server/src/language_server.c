@@ -51,7 +51,7 @@ static json_value* get_validation_response(language_server* self, const json_val
 		json_value* json_dgn = json_object_new(0);
 		json_object_push(json_dgn, "range", create_range(dgn->line, dgn->l, dgn->line, dgn->r));
 		json_object_push(json_dgn, "severity", json_integer_new(dgn->t+1));
-		json_object_push(json_dgn, "message", json_string_new(dgn->message));
+		json_object_push(json_dgn, "message", json_string_new(copystr(dgn->message)));
 		json_object_push(json_dgn, "source", json_string_new("gw-basic language server"));
 
 		json_array_push(diagnostics, json_dgn);
@@ -76,7 +76,7 @@ static json_value* get_completion_response(language_server* self, const json_val
 		completionItem* item = (completionItem*)completions->get(completions, i);
 		json_value* completion_item = json_object_new(2);
 		json_object_push(completion_item, "label", json_string_new(copystr(item->name)));
-		json_object_push(completion_item, "kind", json_integer_new(map_type_to_semantic_token(item->kind)));
+		json_object_push(completion_item, "kind", json_integer_new(item->kind));
 		json_array_push(result, completion_item);
 	}
 	free_completion_items(completions);
@@ -103,10 +103,11 @@ static json_value* get_tokens_response(language_server* self, const json_value* 
 		documentRange->r = get_by_name(end, "character")->u.integer;
 	}
 
-	vector* tokens = self->parser->_tokenizer->make_tokens_with_range(self->parser->_tokenizer, (char*)text, documentRange);
+	lvector* tokens = self->parser->_tokenizer->make_tokens_with_range(self->parser->_tokenizer, (char*)text, documentRange);
 	json_value* arr = json_array_new(0);
-	for (int i = 0; i<tokens->size; ++i) {
-		token* tok = (token*)tokens->get(tokens, i);
+	iterator *it = tokens->iterator(tokens);
+	while(it->has_next(it)) {
+		token* tok = it->get_next(it);
 		tok->kind = map_type_to_semantic_token(tok->kind);
 		if (tok->kind!=Unknown) {
 			json_array_push(arr, json_integer_new(tok->line_l));
@@ -159,13 +160,22 @@ static json_value* get_initialization_response(const json_value* val) {
 	for (int i = 0; i<t_types->size; ++i) {
 		json_array_push(tokenTypes, json_string_new((char*)t_types->get(t_types, i)));
 	}
+	vector* t_modifiers = get_token_modifiers();
+	json_value* tokenModifiers = json_array_new(t_modifiers->size);
+	for (int i = 0; i<t_modifiers->size; ++i) {
+		json_array_push(tokenModifiers, json_string_new((char*)t_modifiers->get(t_modifiers, i)));
+	}
 
 	json_value* semanticTokensLegend = json_object_new(2);
 	json_object_push(semanticTokensLegend, "tokenTypes", tokenTypes);
-	json_object_push(semanticTokensLegend, "tokenModifiers", json_array_new(0));
+	json_object_push(semanticTokensLegend, "tokenModifiers", tokenModifiers);
 
 	json_value* semanticTokensProvider = json_object_new(1);
 	json_object_push(semanticTokensProvider, "legend", semanticTokensLegend);
+	json_object_push(semanticTokensProvider, "range", json_boolean_new(1));
+	json_value* semanticTokensProviderFullOption = json_object_new(1);
+	json_object_push(semanticTokensProviderFullOption, "delta", json_boolean_new(1));
+	json_object_push(semanticTokensProvider, "full", semanticTokensProviderFullOption);
 
 	json_value* workspace = json_object_new(1);
 	json_object_push(workspace, "workspaceFolders", workspaceFolders);
@@ -197,7 +207,6 @@ static void send_message(char* send_message_buf, json_value* val) {
 
 	char* buf = send_message_buf;
 	json_serialize(buf, val);
-//	remove_spaces(buf);
 	size_t json_size = strlen(buf)*sizeof(char);
 
 	Logger->log(log_response, buf);
@@ -240,7 +249,9 @@ static _Bool process(language_server* self, const char* str, const size_t size) 
 		else if (!strcmp(method, "initialized")) {
 			Logger->log(log_info, "initialized");
 		}
-		else if (!strcmp(method, "textDocument/didChange") || !strcmp(method, "textDocument/didOpen")) {
+		else if (!strcmp(method, "textDocument/didChange")
+		|| !strcmp(method, "textDocument/didOpen")
+		|| !strcmp(method, "textDocument/didSave")){
 			update_document(self, val);
 			response = get_validation_response(self, val);
 		}

@@ -10,7 +10,6 @@ diagnostic* create_diagnostic() {
 }
 
 void free_diagnostic_item(diagnostic* _diagnostic) {
-	free(_diagnostic->message);
 	free(_diagnostic);
 }
 void free_diagnostic_items(vector* items) {
@@ -37,5 +36,15 @@ diagnostic* must_begin_number(int line, int last_character) {
 	dgn->line = line;
 	dgn->t = Error;
 	dgn->message = "Строка обязана начинаться с цифры";
+	return dgn;
+}
+
+diagnostic* begin_number_too_large(int line, int l, int r){
+	diagnostic* dgn = create_diagnostic();
+	dgn->l = l;
+	dgn->r = r;
+	dgn->line = line;
+	dgn->t = Error;
+	dgn->message = "Номер строки должен быть в пределах от 0 до 65529";
 	return dgn;
 }

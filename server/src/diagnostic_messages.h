@@ -24,6 +24,7 @@ struct diagnostic {
 
 diagnostic* too_long_line(int line, int last_character);
 diagnostic* must_begin_number(int line, int last_character);
+diagnostic* begin_number_too_large(int line, int l, int r);
 void free_diagnostic_item(diagnostic* _diagnostic);
 void free_diagnostic_items(vector* items);
 

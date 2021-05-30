@@ -284,7 +284,7 @@
             "type": "statement",
             "purpose": "To specify the maximum values for array variable subscripts and allocate storage accordingly.",
             "syntax": "dim variable(subscripts)[,variable(subscripts)]...",
-            "kind": 12
+            "kind": 46
         },
         {
             "name": "draw",
@@ -437,13 +437,6 @@
             "kind": 12
         },
         {
-            "name": "gosub-return",
-            "type": "statement",
-            "purpose": "To branch to, and return from, a subroutine.",
-            "syntax": "gosub line number",
-            "kind": 12
-        },
-        {
             "name": "goto",
             "type": "statement",
             "purpose": "To branch unconditionally out of the normal program sequence to a specified line number.",
@@ -520,14 +513,14 @@
         {
             "name": "ioctl",
             "type": "statement",
-            "purpose": "To allow GW-BASIC to send a &quot;control data&quot; string to a character device driver anytime after the driver has been opened.",
+            "purpose": "To allow GW-BASIC to send a control data string to a character device driver anytime after the driver has been opened.",
             "syntax": "ioctl[#]file number,string",
             "kind": 12
         },
         {
             "name": "ioctl$",
             "type": "function",
-            "purpose": "To allow GW-BASIC to read a &quot;control data&quot; string from an open character device driver.",
+            "purpose": "To allow GW-BASIC to read a control data string from an open character device driver.",
             "syntax": "ioctl$([#]file number)",
             "kind": 12
         },
@@ -815,20 +808,6 @@
             "kind": 12
         },
         {
-            "name": "on-gosub",
-            "type": "statement",
-            "purpose": "To branch to one of several specified line numbers, depending on the value returned when an expression is evaluated.",
-            "syntax": "on expression goto line numbers",
-            "kind": 12
-        },
-        {
-            "name": "on-goto",
-            "type": "statement",
-            "purpose": "To branch to one of several specified line numbers, depending on the value returned when an expression is evaluated.",
-            "syntax": "on expression goto line numbers",
-            "kind": 12
-        },
-        {
             "name": "open",
             "type": "statement",
             "purpose": "To establish input/output (I/O) to a file or device.",
@@ -836,10 +815,10 @@
             "kind": 12
         },
         {
-            "name": "open &quot;com(n)",
+            "name": "open com(n)",
             "type": "statement",
             "purpose": "To allocate a buffer to support RS-232 asynchronous communications with other computers and peripheral devices in the same manner as OPEN for disk files.",
-            "syntax": "open &quot;com[n]:[speed][,parity][,data] [,stop][,rs][,cs[n]][,ds[n]][,cd[n]][,lf] [,pe]&quot; as [#]filenum [len=number]",
+            "syntax": "open com[n]:[speed][,parity][,data] [,stop][,rs][,cs[n]][,ds[n]][,cd[n]][,lf] [,pe] as [#]filenum [len=number]",
             "kind": 12
         },
         {
@@ -1336,17 +1315,10 @@
             "kind": 12
         },
         {
-            "name": "while-wend",
-            "type": "statement",
-            "purpose": "To execute a series of statements in a loop as long as a given condition is true.",
-            "syntax": "while expression",
-            "kind": 12
-        },
-        {
             "name": "width",
             "type": "statement",
             "purpose": "To set the printed line width in number of characters for the screen and line printer.",
-            "syntax": "width &quot;dev&quot;, size",
+            "syntax": "width dev, size",
             "kind": 12
         },
         {
@@ -1425,6 +1397,270 @@
             "purpose": "Logical implication",
             "syntax": "a IMP b",
             "kind": 21
+        },
+        {
+            "name": "sec",
+            "type": "Secant",
+            "args": 0,
+            "purpose": "Compute secant",
+            "syntax": "SEC(X)",
+            "kind": 12
+        },
+        {
+            "name": "csc",
+            "type": "Cosecant",
+            "args": 0,
+            "purpose": "Compute Cosecant",
+            "syntax": "CSC(X)",
+            "kind": 12
+        },
+        {
+            "name": "cot",
+            "type": "Cotangent",
+            "args": 0,
+            "purpose": "Compute Cotangent",
+            "syntax": "COT(X)",
+            "kind": 12
+        },
+        {
+            "name": "arcsin",
+            "type": "Inverse sine",
+            "args": 0,
+            "purpose": "Compute Inverse sine",
+            "syntax": "ARCSIN(X)",
+            "kind": 12
+        },
+        {
+            "name": "arccos",
+            "type": "Inverse cosine",
+            "args": 0,
+            "purpose": "Compute Inverse cosine",
+            "syntax": "ARCCOS(X)",
+            "kind": 12
+        },
+        {
+            "name": "arcsec",
+            "type": "Inverse secant",
+            "args": 0,
+            "purpose": "Compute Inverse secant",
+            "syntax": "ARCSEC(X)",
+            "kind": 12
+        },
+        {
+            "name": "arccsc",
+            "type": "Inverse cosecant",
+            "args": 0,
+            "purpose": "Compute Inverse cosecant",
+            "syntax": "ARCCSC(X)",
+            "kind": 12
+        },
+        {
+            "name": "arccot",
+            "type": "Inverse cotangent",
+            "args": 0,
+            "purpose": "Compute Inverse cotangent",
+            "syntax": "ARCCOT(X)",
+            "kind": 12
+        },
+        {
+            "name": "sinh",
+            "type": "Hyperbolic sine",
+            "args": 0,
+            "purpose": "Compute Hyperbolic sine",
+            "syntax": "SINH(X)",
+            "kind": 12
+        },
+        {
+            "name": "cosh",
+            "type": "Hyperbolic cosine",
+            "args": 0,
+            "purpose": "Compute Hyperbolic cosine",
+            "syntax": "COSH(X)",
+            "kind": 12
+        },
+        {
+            "name": "tanh",
+            "type": "Hyperbolic tangent",
+            "args": 0,
+            "purpose": "Compute Hyperbolic tangent",
+            "syntax": "TANH(X)",
+            "kind": 12
+        },
+        {
+            "name": "sech",
+            "type": "Hyperbolic secant",
+            "args": 0,
+            "purpose": "Compute Hyperbolic secant",
+            "syntax": "SECH(X)",
+            "kind": 12
+        },
+        {
+            "name": "csch",
+            "type": "Hyperbolic cosecant",
+            "args": 0,
+            "purpose": "Compute Hyperbolic cosecant",
+            "syntax": "CSCH(X)",
+            "kind": 12
+        },
+        {
+            "name": "coth",
+            "type": "Hyperbolic cotangent",
+            "args": 0,
+            "purpose": "Compute Hyperbolic cotangent",
+            "syntax": "COTH(X)",
+            "kind": 12
+        },
+        {
+            "name": "arcsinh",
+            "type": "Inverse Hyperbolic sine",
+            "args": 0,
+            "purpose": "Compute Hyperbolic sine",
+            "syntax": "ARCSINH(X)",
+            "kind": 12
+        },
+        {
+            "name": "arccosh",
+            "type": "Inverse Hyperbolic cosine",
+            "args": 0,
+            "purpose": "Compute Hyperbolic cosine",
+            "syntax": "ARCCOSH(X)",
+            "kind": 12
+        },
+        {
+            "name": "arctanh",
+            "type": "Inverse Hyperbolic tangent",
+            "args": 0,
+            "purpose": "Compute Hyperbolic tangent",
+            "syntax": "ARCTANH(X)",
+            "kind": 12
+        },
+        {
+            "name": "arccsch",
+            "type": "Inverse Hyperbolic secant",
+            "args": 0,
+            "purpose": "Compute Hyperbolic secant",
+            "syntax": "ARCCSCH(X)",
+            "kind": 12
+        },
+        {
+            "name": "arcsech",
+            "type": "Inverse Hyperbolic cosecant",
+            "args": 0,
+            "purpose": "Compute Hyperbolic cosecant",
+            "syntax": "ARCSECH(X)",
+            "kind": 12
+        },
+        {
+            "name": "arccoth",
+            "type": "Inverse Hyperbolic cotangent",
+            "args": 0,
+            "purpose": "Compute Hyperbolic cotangent",
+            "syntax": "ARCCOTH(X)",
+            "kind": 12
+        },
+        {
+            "name": "def",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "def",
+            "kind": 15
+        },
+        {
+            "name": "fn",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "fn",
+            "kind": 15
+        },
+        {
+            "name": "seg",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "seg",
+            "kind": 15
+        },
+        {
+            "name": "erdev($)",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "erdev($)",
+            "kind": 15
+        },
+        {
+            "name": "variables",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "variables",
+            "kind": 15
+        },
+        {
+            "name": "gosub",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "gosub",
+            "kind": 15
+        },
+        {
+            "name": "using",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "using",
+            "kind": 15
+        },
+        {
+            "name": "on",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "on",
+            "kind": 15
+        },
+        {
+            "name": "timer(n)",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "timer(n)",
+            "kind": 15
+        },
+        {
+            "name": "option",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "option",
+            "kind": 15
+        },
+        {
+            "name": "base",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "base",
+            "kind": 15
+        },
+        {
+            "name": "while",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "while",
+            "kind": 15
+        },
+        {
+            "name": "wend",
+            "type": "keyword",
+            "args": 0,
+            "purpose": "gwbasic keyword",
+            "syntax": "wend",
+            "kind": 15
         }
     ]
 }

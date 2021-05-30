@@ -24,12 +24,43 @@ struct gwparser {
 	vector* (* make_completions)(gwparser*, char*, int, int);
 	vector* (* validate)(gwparser*, char*);
 };
+
+typedef enum{
+	CompletionUnknown,//0
+	CompletionText,//1
+	CompletionMethod,//2
+	CompletionFunction,//3
+	CompletionConstructor, //4
+	CompletionField,// 5
+	CompletionVariable,// 6
+	CompletionClass, // 7
+	CompletionInterface, //8
+	CompletionModule,// 9
+	CompletionProperty, //10
+	CompletionUnit,// 11
+	CompletionValue,// 12
+	CompletionEnum,// 13
+	CompletionKeyword, //14
+	CompletionSnippet,//  15
+	CompletionColor,//  16
+	CompletionFile,//  17
+	CompletionReference,//  18
+	CompletionFolder,//  19
+	CompletionEnumMember,//  20
+	CompletionConstant,//  21
+	CompletionStruct,//  22
+	CompletionEvent,//  23
+	CompletionOperator,//  24
+	CompletionTypeParameter,//  25
+} completion_t;
+
 typedef struct completionItem completionItem;
 struct completionItem{
 	char *name;
-	token_t kind;
+	completion_t kind;
 };
 
+completion_t map_token_type_to_completion(token_t type);
 gwparser* init_parser(json_value* config);
 void free_completion_item(completionItem* item);
 void free_completion_items(vector* items);

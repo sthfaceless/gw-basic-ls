@@ -4,18 +4,18 @@
 
 #include "vector.h"
 
-static void shrink_vector(vector* self){
+static void shrink_vector(vector* self) {
 	self->_size *= VECTOR_EXPANSION_CONSTANT;
 	self->items = realloc(self->items, self->_size*sizeof(void*));
 }
 
 static void* get(const vector* self, const int pos) {
-	if (self->items && pos < self->size)
+	if (self->items && pos<self->size)
 		return *(self->items+pos);
 	return NULL;
 }
 
-static void* last(const vector *self){
+static void* last(const vector* self) {
 	return get(self, self->size-1);
 }
 
@@ -44,38 +44,38 @@ static void fill(vector* self, void* val) {
 		*ptr = val;
 }
 
-static void merge(vector *self, vector *oth){
-	while (self->size + oth->size > self->_size)
+static void merge(vector* self, vector* oth) {
+	while (self->size+oth->size>self->_size)
 		shrink_vector(self);
 	memcpy(self->items+self->size, oth->items, oth->size);
 	self->size += oth->size;
 	free_vector_no_values(oth);
 }
 
-static void reverse(vector *self){
-	for(void* *l = self->items,** r = self->items+self->size-1; l < r; l++, r--)
+
+static void reverse(vector* self) {
+	for (void** l = self->items, ** r = self->items+self->size-1; l<r; l++, r--)
 		swap(l, r);
 }
 
-static int has_next(iterator * self){
-	vector *vect = (vector *) self->_iterable;
-	return self->curr < vect->size;
+static int has_next(iterator* self) {
+	vector* vect = (vector*)self->_iterable;
+	return self->curr<vect->size;
 }
 
-static void* get_next(iterator * self){
-	vector *vect = (vector *) self->_iterable;
+static void* get_next(iterator* self) {
+	vector* vect = (vector*)self->_iterable;
 	return vect->get(vect, self->curr++);
 }
 
-static iterator* get_iterator(vector* self){
-	iterator *it = malloc(sizeof (iterator));
+static iterator* get_iterator(vector* self) {
+	iterator* it = malloc(sizeof(iterator));
 	it->_iterable = self;
 	it->curr = 0;
 	it->has_next = has_next;
 	it->get_next = get_next;
 	return it;
 }
-
 
 vector* create_vector_sized(size_t size, void* val) {
 	vector* vect = malloc(sizeof(vector));
@@ -130,7 +130,7 @@ vector* create_vector() {
 
 void free_vector(vector* self) {
 	for (void** ptr = self->items; ptr<self->items+self->size; ++ptr) {
-		if(*ptr)
+		if (*ptr)
 			free(*ptr);
 	}
 	free(self->items);
@@ -143,11 +143,11 @@ void free_vector_no_values(vector* self) {
 }
 
 void* get_first(lvector* self) {
-	return self->first ? self->first->val: NULL;
+	return self->first ? self->first->val : NULL;
 }
 
 void* get_last(lvector* self) {
-	return self->last? self->last->val: NULL;
+	return self->last ? self->last->val : NULL;
 }
 
 void* getl(lvector* self, const int pos) {
@@ -160,7 +160,7 @@ void* getl(lvector* self, const int pos) {
 	return curr->val;
 }
 
-static lnode* create_lnode(void *val){
+static lnode* create_lnode(void* val) {
 	lnode* node = malloc(sizeof(lnode));
 	node->val = val;
 	node->next = NULL;
@@ -200,7 +200,7 @@ void push_first(lvector* self, void* val) {
 
 void popl(lvector* self) {
 	if (self->last) {
-		lnode* prev = self->last->prev;
+		lnode *curr = self->last, *prev = curr->prev;
 		if (prev) {
 			self->last = prev;
 			prev->next = NULL;
@@ -214,7 +214,7 @@ void popl(lvector* self) {
 
 void pop_first(lvector* self) {
 	if (self->first) {
-		lnode* next = self->first->next;
+		lnode *curr = self->first, *next = self->first->next;
 		if (next) {
 			self->first = next;
 			next->prev = NULL;
@@ -226,14 +226,14 @@ void pop_first(lvector* self) {
 	}
 }
 
-static int has_lnext(iterator * self){
-	lnode *node = (lnode *) self->_iterable;
-	return node != NULL;
+static int has_lnext(iterator* self) {
+	lnode* node = (lnode*)self->_iterable;
+	return node!=NULL;
 }
 
-static void* get_lnext(iterator * self){
-	if(self->_iterable){
-		lnode *node = (lnode *) self->_iterable;
+static void* get_lnext(iterator* self) {
+	if (self->_iterable) {
+		lnode* node = (lnode*)self->_iterable;
 		self->_iterable = node->next;
 		self->curr++;
 		return node->val;
@@ -241,13 +241,58 @@ static void* get_lnext(iterator * self){
 	return NULL;
 }
 
-static iterator* get_literator(lvector* self){
-	iterator *it = malloc(sizeof (iterator));
+static iterator* get_literator(lvector* self) {
+	iterator* it = malloc(sizeof(iterator));
 	it->_iterable = self->first;
 	it->curr = 0;
 	it->has_next = has_lnext;
 	it->get_next = get_lnext;
 	return it;
+}
+
+void merge_nodes(lvector *list, lnode *firstNode, lnode *secondNode, void* val){
+	lnode *next = secondNode->next;
+
+	if(secondNode == list->last)
+		list->last = firstNode;
+
+	firstNode->val = val;
+	firstNode->next = next;
+	if(next)
+		next->prev = firstNode;
+
+	list->size--;
+	free(secondNode);
+}
+
+void split_node(lvector* list, lnode *node, void* val1, void *val2){
+
+	lnode* node2 = create_lnode(val2);
+	node2->next = node->next;
+	node2->prev = node;
+	if(list->last == node)
+		list->last = node2;
+
+	node->val = val1;
+	node->next = node2;
+
+	list->size++;
+}
+
+void extract_node(lvector* list, lnode *node){
+
+	lnode *prev = node->prev, *next = node->next;
+
+	if(list->first == node)
+		list->first = next;
+	if(list->last == node)
+		list->last = prev;
+
+	if(next) next->prev = prev;
+	if(prev) prev->next = next;
+
+	free(node);
+	list->size--;
 }
 
 lvector* create_lvector() {
@@ -301,6 +346,23 @@ void free_lvector_no_values(lvector* self) {
 		popl(self);
 	}
 	free(self);
+}
+
+vector* cast_ltovector(lvector* vect) {
+	vector* result = create_vector();
+	iterator* it = vect->iterator(vect);
+	while (it->has_next(it))
+		result->push(result, it->get_next(it));
+	free_lvector_no_values(vect);
+	return result;
+}
+lvector* cast_vtolector(vector* vect) {
+	lvector* result = create_lvector();
+	iterator* it = vect->iterator(vect);
+	while (it->has_next(it))
+		result->push(result, it->get_next(it));
+	free_vector_no_values(vect);
+	return result;
 }
 
 void arrcopy(void** dest, void** src, size_t size) {

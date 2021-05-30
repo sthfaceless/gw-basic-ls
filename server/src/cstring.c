@@ -26,7 +26,7 @@ static void add(string* self, char ch) {
 	self->size++;
 }
 
-static string* conc(string* self, string* other) {
+static string* conc_strings(string* self, string* other) {
 	self->chars->merge(self->chars, other->chars);
 	self->size = self->chars->size;
 	self->_chars_changed = 1;
@@ -75,7 +75,7 @@ static string* init_string() {
 	self->get_chars_and_terminate = get_chars_and_terminate;
 	self->char_at = char_at;
 	self->set_at = set_at;
-	self->conc = conc;
+	self->conc = conc_strings;
 	self->find = find;
 	self->add = add;
 	self->reverse = reverse;
@@ -231,24 +231,49 @@ vector* strsplit(char* str, char tok) {
 	return tokens;
 }
 
+char* conc(char *str1, char *str2){
+	char *str = malloc(sizeof (char) * (strlen(str1) + strlen(str2) + 1)),
+		 *_str = str;
+	while(*str1) *(_str++) = *(str1++);
+	while(*str2) *(_str++) = *(str2++);
+	*_str = 0;
+	return str;
+}
+char* concd(char *str1, char *str2, char *delim){
+	char *str = malloc(sizeof (char) * (strlen(str1) + strlen(str2) + strlen(delim) + 1)),
+		 *_str = str;
+	while(*str1) *(_str++) = *(str1++);
+	while(*delim) *(_str++) = *(delim++);
+	while(*str2) *(_str++) = *(str2++);
+	*_str = 0;
+	return str;
+}
+
+char cast_char_to_wtree_edge(char ch){
+	return ch-WORDS_BEGIN_SYMBOL;
+}
+
 static int create_wtree_node(wtree* self, void* payload, char ch, int parent) {
 	const int MAX_SYMBOLS = WORDS_END_SYMBOL-WORDS_BEGIN_SYMBOL+1;
 	int* node = malloc(sizeof(int)*MAX_SYMBOLS);
 	memset(node, 0, MAX_SYMBOLS*sizeof(int));
-	self->tree[self->size] = node;
-	self->parent[self->size] = parent;
-	self->chars[self->size] = ch;
-	self->terminate[self->size] = payload;
-	self->edges[self->size] = create_lvector();
+
+	int vertex = self->size;
+	self->tree[vertex] = node;
+	self->parent[vertex] = parent;
+	self->chars[vertex] = ch;
+	self->terminate[vertex] = payload;
+	self->edges[vertex] = create_lvector();
 	self->size++;
-	return self->size-1;
+
+	return vertex;
 }
 
 static void add_wtree(wtree* self, const char* str, void* payload) {
 	int** curr = self->tree;
 	while (isprint(*str)) {
-		char ch = *str-WORDS_BEGIN_SYMBOL;
-		if ((*curr)[ch]==-1) {
+		char ch = cast_char_to_wtree_edge(*str);
+		if (!(*curr)[ch]) {
 			int node_id = create_wtree_node(self, NULL, *str, curr-self->tree);
 			(*curr)[ch] = node_id;
 			self->edges[curr-self->tree]->push(self->edges[curr-self->tree], wrapi(node_id));
@@ -259,37 +284,49 @@ static void add_wtree(wtree* self, const char* str, void* payload) {
 	if (curr!=self->tree)
 		self->terminate[curr-self->tree] = payload;
 }
-static int find_ind(wtree* self, const char* str) {
-	int** curr = self->tree;
+static int vfind(int v, wtree* self,const char* str){
+	int** curr = self->tree+v;
 	while (isprint(*str)) {
-		char ch = *str-WORDS_BEGIN_SYMBOL;
-		if ((*curr)[ch]==-1)
-			return -1;
+		char ch = cast_char_to_wtree_edge(*str);
+		if (!(*curr)[ch])
+			return 0;
 		curr = self->tree+(*curr)[ch];
 		str++;
 	}
 	return curr-self->tree;
 }
 
+static int find_ind(wtree* self, const char* str) {
+	return self->vfind(0, self, str);
+}
+
 static void* find_wtree(wtree* self, const char* str) {
 	int ind = find_ind(self, str);
-	if (ind!=-1)
+	if (ind)
 		return self->terminate[ind];
 	return NULL;
 }
 
-static void* walk(wtree* self, const char* str) {
-	int curr = 0;
-	while (*str && (curr = self->tree[curr][*str]));
+static void* vwalk(int v, wtree* self, const char* str){
+	int curr = v;
+	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*str)]));
 	return self->terminate[curr];
 }
 
-void* walk_path(wtree* self, const char* str) {
-	int curr = 0;
+static void* walk(wtree* self, const char* str) {
+	return self->vwalk(0, self, str);
+}
+
+static void* vwalk_path(int v, wtree* self, const char* str){
+	int curr = v;
 	string* path = get_string();
-	while (*str && (curr = self->tree[curr][*str]))
+	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*str)]))
 		path->add(path, self->chars[curr]);
 	return path->get_chars_and_terminate(path);
+}
+
+static void* walk_path(wtree* self, const char* str) {
+	return self->vwalk_path(0, self, str);
 }
 
 wtree* create_wtree_sized(size_t size) {
@@ -303,9 +340,12 @@ wtree* create_wtree_sized(size_t size) {
 	create_wtree_node(self, NULL, 0, -1);
 	self->add = add_wtree;
 	self->find = find_wtree;
+	self->vfind = vfind;
 	self->find_ind = find_ind;
 	self->walk = walk;
+	self->vwalk = vwalk;
 	self->walk_path = walk_path;
+	self->vwalk_path = vwalk_path;
 	return self;
 }
 
