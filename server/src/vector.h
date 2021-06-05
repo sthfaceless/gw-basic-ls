@@ -46,7 +46,9 @@ struct vector {
 	iterator* (* iterator)(vector*);
 };
 
+vector* merge_vectors(vector* first_vector, vector* second_vector);
 vector* create_vector();
+
 
 vector* create_vector_sized(size_t size, void* val);
 vector* create_vector_reserved(size_t size);
@@ -84,6 +86,7 @@ struct lvector {
 };
 
 void merge_nodes(lvector* list, lnode *firstNode, lnode *nextNode, void* val);
+void reverse_merge_nodes(lvector* list, lnode *firstNode, lnode *nextNode, void* val);
 void split_node(lvector* list, lnode *node, void* val1, void *val2);
 void extract_node(lvector* list, lnode *node);
 lvector* create_lvector();

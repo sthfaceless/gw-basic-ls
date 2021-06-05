@@ -24,7 +24,8 @@ function getNameType(tokens){
 }
 
 const particularTypes = {
-    'dim': 46
+    'dim': 46,
+    'run': 48
 }
 
 function addMoreInfo(href, info) {

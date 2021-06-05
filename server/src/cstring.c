@@ -45,7 +45,8 @@ static char char_at(string* self, int pos) {
 }
 
 static char* get_chars(string* self) {
-	update_chars(self);
+	if(self->_chars_changed)
+		update_chars(self);
 	return self->_chars;
 }
 
@@ -98,7 +99,7 @@ string* get_string_from(char* str) {
 
 	void** item = self->chars->items;
 	while (*str)
-		*(item++) = str++;
+		*(item++) = wrapc(*(str++));
 
 	return self;
 }
@@ -176,11 +177,22 @@ int is_eol(char ch) {
 	return ch=='\r' || ch=='\n';
 }
 
-void strlower(char* str) {
+char* strlower(char* str) {
+	char* _str = str;
 	while (*str) {
 		*str = tolower(*str);
 		str++;
 	}
+	return _str;
+}
+char* strupper(char *str){
+	char *_str = str;
+	while(*str){
+		if(*str >= 'a' && *str <= 'z')
+			*str -= 32;
+		str++;
+	}
+	return _str;
 }
 char* copystr(const char* str) {
 	if (str==NULL) {
@@ -309,7 +321,7 @@ static void* find_wtree(wtree* self, const char* str) {
 
 static void* vwalk(int v, wtree* self, const char* str){
 	int curr = v;
-	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*str)]));
+	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*(str++))]));
 	return self->terminate[curr];
 }
 
@@ -320,7 +332,7 @@ static void* walk(wtree* self, const char* str) {
 static void* vwalk_path(int v, wtree* self, const char* str){
 	int curr = v;
 	string* path = get_string();
-	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*str)]))
+	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*(str++))]))
 		path->add(path, self->chars[curr]);
 	return path->get_chars_and_terminate(path);
 }

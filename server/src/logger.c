@@ -20,6 +20,9 @@ static void dolog(const log_type type, const char *str) {
         case log_response:
             fprintf(fptr, "[Response]: %s\r\n", str);
             break;
+		case log_debug:
+			fprintf(fptr, "[Debug]: %s\r\n", str);
+			break;
         default:
             break;
     }

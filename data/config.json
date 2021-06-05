@@ -1070,7 +1070,7 @@
             "type": "command",
             "purpose": "To execute the program currently in memory, or to load a file from the diskette into memory and run it.",
             "syntax": "run filename[,r]",
-            "kind": 12
+            "kind": 48
         },
         {
             "name": "save",

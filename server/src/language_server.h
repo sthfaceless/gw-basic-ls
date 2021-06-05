@@ -18,7 +18,6 @@
 #include "parser.h"
 
 typedef struct language_server language_server;
-
 struct language_server {
 	gwparser* parser;
 	map * documents;
@@ -31,6 +30,7 @@ extern logger *Logger;
 
 language_server *create_language_server(char *config_file);
 
+void free_document_item(document *doc);
 void free_language_server(language_server *self);
 
 #endif //GW_BASIC_SERVER_LANGUAGE_SERVER_H

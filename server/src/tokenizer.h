@@ -17,9 +17,9 @@
 #include "json_helper.h"
 
 #define MAX_SYMBOLS 256
+#define DEFAULT_VARIABLES_SIZE 1024
 
-typedef enum
-{
+typedef enum {
 	Namespace,//0
 	Type,//1
 	Class,//2
@@ -66,27 +66,33 @@ typedef enum
 	SinglePrecisionValue,//43
 	DoublePrecisionValue,//44
 	LineNumber,//45
-	DimStatement//46
+	DimStatement,//46
+	PreExponent,//47
+	RunStatement//48
 } token_t;
 
 typedef struct range range;
 
-struct range
-{
+struct range {
 	int l, r, line_l, line_r;
 };
 
 typedef struct token token;
 
-struct token
-{
+struct token {
 	char* str;
 	token_t kind;
 	int l, r, line_l, line_r;
 };
 
-typedef enum
-{
+typedef struct document document;
+struct document{
+	char *text;
+	wtree* variables;
+	lvector* tokens;
+};
+
+typedef enum {
 	Free,
 	EndOfData,
 	StringReading,
@@ -95,41 +101,52 @@ typedef enum
 
 typedef struct tokenizer tokenizer;
 
-struct tokenizer
-{
+struct tokenizer {
 	wtree* keywords;
+	document* doc;
 	lvector* __tokens;
 	int __curr_line, __curr_char, __token_len;
 	char* __data, * __token;
 	token_t* delimiters;
 	wtree* delimiter_words;
 	TokenizerState state;
-	lvector*
-	(* make_tokens)(tokenizer*, char*);
-	lvector*
-	(* make_tokens_with_range)(tokenizer*, char*, range*);
-	vector*
-	(* make_tokens_with_lines)(tokenizer*, char*);
+
+	lvector* (* make_tokens)(tokenizer*, document*);
+
 };
 
 typedef struct gwkeyword gwkeyword;
 
-struct gwkeyword
-{
+struct gwkeyword {
 	char* name, * type, * purpose, * syntax;
 	token_t kind;
 };
 
+vector* make_tokens_with_lines(lvector* tokens);
+
+lvector* make_tokens_with_range(lvector* tokens, range* rng);
+
 token* find_token(vector* tokens_line, int pos);
+token* find_token_on_line(lvector* tokens, int line, int pos);
+
 range* create_range_object(int line_l, int l, int line_r, int r);
+
 vector* get_token_modifiers();
+
 vector* get_token_types();
+
 int map_type_to_semantic_token(token_t type);
+
 token* create_token(const char* str, int l, int r, int line_l, int line_r);
+gwkeyword* get_gwkeyword(char* name, char* type, char* purpose, char* syntax, token_t kind);
 tokenizer* create_tokenizer(json_value* config);
+
 void free_token_item(token* t);
+
 void free_token_items(lvector* t);
+
 void free_tokens(vector* tokens);
+
 void free_tokenizer(tokenizer* t);
 
 #endif //GW_BASIC_SERVER_TOKENIZER_H

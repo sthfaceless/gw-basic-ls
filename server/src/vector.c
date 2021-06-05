@@ -5,6 +5,8 @@
 #include "vector.h"
 
 static void shrink_vector(vector* self) {
+	if(!self->_size)
+		self->_size = 1;
 	self->_size *= VECTOR_EXPANSION_CONSTANT;
 	self->items = realloc(self->items, self->_size*sizeof(void*));
 }
@@ -44,12 +46,17 @@ static void fill(vector* self, void* val) {
 		*ptr = val;
 }
 
+vector* merge_vectors(vector* first_vector, vector* second_vector){
+	while (first_vector->size+second_vector->size > first_vector->_size)
+		shrink_vector(first_vector);
+	memcpy(first_vector->items+first_vector->size, second_vector->items, second_vector->size*sizeof (void *));
+	first_vector->size += second_vector->size;
+	free_vector_no_values(second_vector);
+	return first_vector;
+}
+
 static void merge(vector* self, vector* oth) {
-	while (self->size+oth->size>self->_size)
-		shrink_vector(self);
-	memcpy(self->items+self->size, oth->items, oth->size);
-	self->size += oth->size;
-	free_vector_no_values(oth);
+	merge_vectors(self, oth);
 }
 
 
@@ -129,9 +136,10 @@ vector* create_vector() {
 }
 
 void free_vector(vector* self) {
+	int cnter = 0;
 	for (void** ptr = self->items; ptr<self->items+self->size; ++ptr) {
 		if (*ptr)
-			free(*ptr);
+			free(*ptr), cnter++;
 	}
 	free(self->items);
 	free(self);
@@ -250,6 +258,21 @@ static iterator* get_literator(lvector* self) {
 	return it;
 }
 
+void reverse_merge_nodes(lvector *list, lnode *firstNode, lnode *secondNode, void* val){
+	lnode *prev = firstNode->prev;
+
+	if(firstNode == list->first)
+		list->first = secondNode;
+
+	secondNode->val = val;
+	secondNode->prev = prev;
+	if(prev)
+		prev->next = secondNode;
+
+	list->size--;
+	free(firstNode);
+}
+
 void merge_nodes(lvector *list, lnode *firstNode, lnode *secondNode, void* val){
 	lnode *next = secondNode->next;
 
@@ -334,8 +357,8 @@ lvector* create_lvector_from(int args, ...) {
 }
 
 void free_lvector(lvector* self) {
-	while (self->first) {
-		free(self->first->val);
+	while (self->last) {
+		free(self->last->val);
 		popl(self);
 	}
 	free(self);

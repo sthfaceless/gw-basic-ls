@@ -2,6 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef LINUX
+#include <unistd.h>
+#endif
+
+#ifdef WINDOWS
+#include <windows.h>
+#endif
+
 #include "debug.h"
 
 #include "json-builder.h"
@@ -14,22 +22,33 @@
 #include "parser.h"
 #include "cstring.h"
 
-char* LOG_FILE = "";
-char* CONFIG_FILE = "";
+static char* LOG_FILE = "";
+
+static char* CONFIG_FILE = "";
 
 extern logger* Logger;
 
-void parse_args(int argc, char* argv[]) {
+static void sleep_thread(int ms) {
 
-	for (int i = 1; i<argc; i++) {
+#ifdef LINUX
+	usleep(ms * 1000);
+#endif
+
+#ifdef WINDOWS
+	Sleep(ms);
+#endif
+}
+
+static void parse_args(int argc, char* argv[]) {
+
+	for (int i = 1; i < argc; i++) {
 		vector* values = strsplit(argv[i], '=');
-		if (values->size==2)
+		if (values->size == 2)
 			if (!strcmp((char*)values->get(values, 0), "config_file"))
 				CONFIG_FILE = (char*)values->get(values, 1);
 			else if (!strcmp((char*)values->get(values, 0), "log_file"))
 				LOG_FILE = (char*)values->get(values, 1);
 	}
-
 }
 
 int main(int argc, char* argv[]) {
@@ -40,14 +59,13 @@ int main(int argc, char* argv[]) {
 
 	message* msg = create_message();
 	language_server* ls = create_language_server(CONFIG_FILE);
-
 	FILE* fptr = fopen("/home/danil/CLionProjects/gw_basic_server/log2.txt", "a");
 
 	while (1) {
 
 		int c = getchar();
 
-		if (c>=0) {
+		if (c >= 0) {
 
 			fprintf(fptr, "%c", c);
 			fflush(fptr);
@@ -60,7 +78,9 @@ int main(int argc, char* argv[]) {
 				msg->clear_message(msg);
 			}
 		}
-
+		else {
+			sleep_thread(500);
+		}
 	}
 
 	fclose(fptr);

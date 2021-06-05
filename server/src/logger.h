@@ -14,7 +14,8 @@ typedef enum {
     log_info,
     log_error,
     log_response,
-    log_request
+    log_request,
+    log_debug
 } log_type;
 
 struct logger {

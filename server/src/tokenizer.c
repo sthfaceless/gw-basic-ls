@@ -110,8 +110,11 @@ int map_type_to_semantic_token(token_t type) {
 		mapper[IntegerValue] = Number;
 		mapper[SinglePrecisionValue] = Number;
 		mapper[DoublePrecisionValue] = Number;
+		mapper[PreExponent] = Unknown;
 
 		mapper[LineNumber] = Number;
+		mapper[DimStatement] = Keyword;
+		mapper[RunStatement] = Keyword;
 	}
 
 	return mapper[type];
@@ -138,29 +141,18 @@ token* create_token(const char* str, int l, int r, int line_l, int line_r) {
 	t->kind = Unknown;
 	return t;
 }
-
-//static token* get_token(tokenizer* self, const char* str, int l, int r, int line_l, int line_r) {
-//	token* t = create_token(str, l, r, line_l, line_r);
-//	set_token_type(self, t);
-//	return t;
-//}
-//
-//static void end_token(lvector* vect, tokenizer* self, char* token, int* sz, int l, int line) {
-//	if (*sz) {
-//		token[*sz] = 0;
-//		vect->push(vect, get_token(self, copystr(token), l, l+(*sz)-1, line, line));
-//		*sz = 0;
-//	}
-//}
-
-static void concat_tokens(token* firstToken, token* secondToken) {
-
-	char* str = concd(firstToken->str, secondToken->str, " ");
+static void merge_tokens_with_delim(token* firstToken, token* secondToken, char *delim){
+	char* str = delim ? concd(firstToken->str, secondToken->str, delim)
+		: conc(firstToken->str, secondToken->str);
 	free(firstToken->str), free(secondToken->str);
 	firstToken->str = str;
 	firstToken->r = secondToken->r;
 	firstToken->line_r = secondToken->line_r;
-	free_token_item(secondToken);
+	free(secondToken);
+}
+
+static void merge_tokens(token* firstToken, token* secondToken) {
+	merge_tokens_with_delim(firstToken, secondToken, " ");
 }
 
 static token* split_token(token* self, int pos) {
@@ -168,7 +160,7 @@ static token* split_token(token* self, int pos) {
 	token* _token = create_token("", self->l + pos + 1, self->r, self->line_l, self->line_r);
 	_token->str = substr(self->str, pos + 1, strlen(self->str) - 1);
 
-	self->r = pos;
+	self->r = self->l + pos;
 	char* temp = self->str;
 	self->str = substr(temp, 0, pos);
 	free(temp);
@@ -176,57 +168,8 @@ static token* split_token(token* self, int pos) {
 	return _token;
 }
 
-static int rem_grouping(tokenizer* self, lvector* nodes, lnode* node) {
-
-	token* _token = node->val, * _prev_token = node->prev ? node->prev->val : NULL;
-	if (!strcmp(_token->str, "rem")
-		&& (!_prev_token || _prev_token->line_r < _token->line_l)) {
-		token* next_token = node->next ? node->next->val : NULL;
-		while (next_token && next_token->line_l == _token->line_r) {
-			concat_tokens(_token, next_token);
-			merge_nodes(nodes, node, node->next, _token);
-			next_token = node->next ? node->next->val : NULL;
-		}
-		_token->kind = Comment;
-		return 1;
-	}
-
-	return 0;
-}
-
-static int complex_keyword_grouping(tokenizer* self, lvector* nodes, lnode* node) {
-
-	token* _token = node->val, * next_token = node->next ? node->next->val : NULL;
-	if (!next_token)
-		return 0;
-
-	int vertex = self->keywords->vfind(0, self->keywords, _token->str);
-	gwkeyword* walk_result = NULL;
-	int space_edge = cast_char_to_wtree_edge(' ');
-	if (self->keywords->tree[vertex][space_edge]
-		&& (walk_result = self->keywords->vwalk(self->keywords->tree[vertex][space_edge], self->keywords,
-			next_token->str))) {
-
-		token* rtoken = split_token(next_token, strlen(walk_result->name) - (strlen(_token->str) + 1) - 1);
-		node->next->val = rtoken;
-		if (!strlen(rtoken->str)) extract_node(nodes, node->next);
-		free_token_item(rtoken);
-
-		concat_tokens(_token, next_token);
-		_token->kind = walk_result->kind;
-
-		return 1;
-	}
-
-	return 0;
-}
-
-static int semantic_grouping(tokenizer* self) {
-
-	for (lnode* node = self->__tokens->first; node; node = node->next) {
-		int result = rem_grouping(self, self->__tokens, node)
-			|| complex_keyword_grouping(self, self->__tokens, node);
-	}
+static int dist_tokens(token* first, token* second){
+	return first->line_l != first->line_r ? INT32_MAX : second->l - first->r;
 }
 
 static int is_keyword(tokenizer* self, lvector* nodes, lnode* node) {
@@ -235,6 +178,15 @@ static int is_keyword(tokenizer* self, lvector* nodes, lnode* node) {
 	gwkeyword* keyword_result = self->keywords->find(self->keywords, _token->str);
 	if (keyword_result) {
 		_token->kind = keyword_result->kind;
+	}
+	return _token->kind != Unknown;
+}
+
+static int is_variable(tokenizer* self, lvector* nodes, lnode* node){
+	token* _token = node->val;
+	gwkeyword* variable_result = self->doc->variables->find(self->doc->variables, _token->str);
+	if (variable_result) {
+		_token->kind = variable_result->kind;
 	}
 	return _token->kind != Unknown;
 }
@@ -250,24 +202,29 @@ static int is_line_number(tokenizer* self, lvector* nodes, lnode* node) {
 	return _token->kind != Unknown;
 }
 
+static int is_integer_value(const char *str){
+	return matchb(str, "^(\\+|-)?([0-9][0-9]{0,4})(!|#|%)?$")
+		|| matchb(str, "^(\\+|-)?&H[0-9|a-f]{1,16}(!|#|%)?$")
+		|| matchb(str, "^(\\+|-)?&O?[0-7]{1,16}(!|#|%)?$");
+}
+
 static int is_number(tokenizer* self, lvector* nodes, lnode* node) {
 
 	token* _token = node->val;
 	const char* str = _token->str;
-	if (matchb(str, "^(+|-)?(0|([1-9][0-9]{0,4}))(!|#|%)?$")
-		|| matchb(str, "^(+|-)?&H[0-8]{1,16}(!|#|%)?$")
-		|| matchb(str, "^(+|-)?&O?[0-7]{1,16}(!|#|%)?$")) {
+	if (is_integer_value(str)) {
 		_token->kind = IntegerValue;
 	}
-	else if (matchb(str, "^(+|-)?(0|([1-9][0-9]{0,6})).[0-9]{1,7}(!|#|%)?$")
-		|| matchb(str, "^(+|-)?(0|([1-9][0-9]{0,6}))(.[0-9]{1,7})?e(+|-)?[0-9]{1,2}(!|#|%)?$")) {
+	else if (matchb(str, "^(\\+|-)?[0-9][0-9]{0,6}\\.[0-9]{1,7}(!|#|%)?$")
+		|| matchb(str, "^(\\+|-)?[0-9][0-9]{0,6}(\\.[0-9]{1,7})?e(\\+|-)?[0-9]{1,2}(!|#|%)?$")) {
 		_token->kind = SinglePrecisionValue;
 	}
-	else if (matchb(str, "^(+|-)?(0|([1-9][0-9]{0,15}))(!|#|%)?$")
-		|| matchb(str, "^(+|-)?(0|([1-9][0-9]{0,15})).[0-9]{1,16}(!|#|%)?$")
-		|| matchb(str, "^(+|-)?(0|([1-9][0-9]{0,15}))(.[0-9]{1,16})?d(+|-)?[0-9]{1,2}(!|#|%)?$")) {
+	else if (matchb(str, "^(\\+|-)?[0-9][0-9]{0,15}(!|#|%)?$")
+		|| matchb(str, "^(\\+|-)?[0-9][0-9]{0,15}\\.[0-9]{1,16}(!|#|%)?$")
+		|| matchb(str, "^(\\+|-)?[0-9][0-9]{0,15}(\\.[0-9]{1,16})?d(\\+|-)?[0-9]{1,2}(!|#|%)?$")) {
 		_token->kind = DoublePrecisionValue;
-	}
+	}else if(matchb(str, "^(\\+|-)?[0-9][0-9]{0,15}(\\.[0-9]{1,16})?(e|d)$"))
+		_token->kind = PreExponent;
 
 	/*
 	 * В случае, если в конце был кастящий символ
@@ -292,6 +249,45 @@ static int is_number(tokenizer* self, lvector* nodes, lnode* node) {
 	return _token->kind != Unknown;
 }
 
+gwkeyword* get_gwkeyword(char* name,
+	char* type, char* purpose, char* syntax, token_t kind) {
+
+	gwkeyword* keyword = malloc(sizeof(gwkeyword));
+	keyword->name = strupper(copystr(name));
+	keyword->type = copystr(type);
+	keyword->purpose = copystr(purpose);
+	keyword->syntax = copystr(syntax);
+	keyword->kind = kind;
+
+	return keyword;
+}
+
+static char* map_variable_type_to_string(token_t kind){
+	static char** mapper = NULL;
+	if(mapper == NULL){
+
+		mapper = malloc(sizeof (char*) * 64);
+
+		mapper[IntegerVariable] = "Integer";
+		mapper[SinglePrecisionVariable] = "SinglePrecision";
+		mapper[DoublePrecisionVariable] = "DoublePrecision";
+		mapper[StringVariable] = "String";
+
+		mapper[ArrayIntegerVariable] = "Integer Array";
+		mapper[ArraySinglePrecisionVariable] = "SinglePrecision Array";
+		mapper[ArrayDoublePrecisionVariable] = "DoublePrecision Array";
+		mapper[ArrayStringVariable] = "String Array";
+
+	}
+	return mapper[kind];
+}
+
+static gwkeyword* create_new_variable(token* _token) {
+
+	return get_gwkeyword(_token->str,
+		"variable", "To store data", map_variable_type_to_string(_token->kind), _token->kind);
+}
+
 static void _set_variable_type_with_context(token* _token,
 	token* prev_token, token* next_token,
 	token_t deftype, token_t arrtype) {
@@ -305,25 +301,6 @@ static void _set_variable_type_with_context(token* _token,
 	}
 }
 
-static gwkeyword* get_gwkeyword(char* name,
-	char* type, char* purpose,char* syntax, token_t kind) {
-
-	gwkeyword* keyword = malloc(sizeof(gwkeyword));
-	keyword->name = copystr(name);
-	keyword->type = copystr(type);
-	keyword->purpose = copystr(purpose);
-	keyword->syntax = copystr(syntax);
-	keyword->kind = kind;
-
-	return keyword;
-}
-
-static gwkeyword* create_new_variable(token* _token) {
-
-	return get_gwkeyword(_token->str,
-		"variable", "", _token->str, _token->kind);
-}
-
 static int is_new_variable(tokenizer* self, lvector* nodes, lnode* node) {
 
 	token* _token = node->val,
@@ -333,6 +310,8 @@ static int is_new_variable(tokenizer* self, lvector* nodes, lnode* node) {
 	/*
 	 * Объвление переменной должно быть вначале строки или statement
 	 * */
+	if(!strcmp(str, "hui"))
+		Logger->log(log_debug, "found hui");
 	if (prev_token && (prev_token->kind == LineNumber
 		|| prev_token->kind == StatementDelimiter
 		|| prev_token->kind == DimStatement)) {
@@ -362,7 +341,7 @@ static int is_new_variable(tokenizer* self, lvector* nodes, lnode* node) {
 					ArraySinglePrecisionVariable);
 				break;
 			}
-			self->keywords->add(self->keywords, _token->str, create_new_variable(_token));
+			self->doc->variables->add(self->doc->variables, _token->str, create_new_variable(_token));
 		}
 	}
 	return _token->kind != Unknown;
@@ -379,6 +358,7 @@ static int set_token_type(tokenizer* self, lvector* nodes, lnode* node) {
 		return 0;
 
 	int result = is_keyword(self, nodes, node)
+		|| is_variable(self, nodes, node)
 		|| is_line_number(self, nodes, node)
 		|| is_number(self, nodes, node)
 		|| is_new_variable(self, nodes, node);
@@ -386,22 +366,135 @@ static int set_token_type(tokenizer* self, lvector* nodes, lnode* node) {
 	return result;
 }
 
-static void set_token_types(tokenizer* self) {
+static int set_token_types(tokenizer* self) {
 
+	int updated_types = 0;
 	for (lnode* node = self->__tokens->first; node; node = node->next) {
-		set_token_type(self, self->__tokens, node);
+		updated_types += set_token_type(self, self->__tokens, node);
 	}
+	return updated_types;
+}
+
+static int rem_grouping(tokenizer* self, lvector* nodes, lnode* node) {
+
+	token* _token = node->val, * _prev_token = node->prev ? node->prev->val : NULL;
+	if (!strcmp(_token->str, "rem")
+		&& (_prev_token && _prev_token->kind == LineNumber)) {
+		token* next_token = node->next ? node->next->val : NULL;
+		while (next_token && next_token->line_l == _token->line_r) {
+			merge_tokens(_token, next_token);
+			merge_nodes(nodes, node, node->next, _token);
+			next_token = node->next ? node->next->val : NULL;
+		}
+		_token->kind = Comment;
+		return 1;
+	}
+
+	return 0;
+}
+
+static int complex_keyword_grouping(tokenizer* self, lvector* nodes, lnode* node) {
+
+	token* _token = node->val, * next_token = node->next ? node->next->val : NULL;
+	if (!next_token)
+		return 0;
+
+	int vertex = self->keywords->vfind(0, self->keywords, _token->str);
+	gwkeyword* walk_result = NULL;
+	int space_edge = cast_char_to_wtree_edge(' ');
+	if (self->keywords->tree[vertex][space_edge]
+		&& (walk_result = self->keywords->vwalk(self->keywords->tree[vertex][space_edge], self->keywords,
+			next_token->str))) {
+
+		token* rtoken = split_token(next_token, strlen(walk_result->name) - (strlen(_token->str) + 1) - 1);
+		node->next->val = rtoken;
+		if (!strlen(rtoken->str))
+			extract_node(nodes, node->next);
+		free_token_item(rtoken);
+
+		merge_tokens(_token, next_token);
+		_token->kind = walk_result->kind;
+
+		return 1;
+	}
+
+	return 0;
+}
+
+static int is_number_delimiter(token* _token){
+	return (_token->kind == ArithmeticOperator) && (*_token->str == '+' || *_token->str == '-');
+}
+
+static int is_after_number_delimiter(token* _token){
+	return _token->kind == IntegerValue 
+	|| _token->kind == SinglePrecisionValue
+	|| _token->kind == DoublePrecisionValue
+	|| _token->kind == PreExponent;
+}
+
+static int number_grouping(tokenizer* self, lvector* nodes, lnode* node){
+
+	/*
+	 * '-' divided one number or expression
+	 * It was one number in case
+	 * 1)number(e|d)-number
+	 * 2)-number
+	 * */
+	token *curr = node->val;
+	if(!is_number_delimiter(curr))
+		return 0;
+	
+	token *prev = node->prev ? node->prev->val : NULL;
+	token *next = node->next ? node->next->val : NULL;
+
+	if(next && is_after_number_delimiter(next)){
+
+		if(prev && prev->kind == PreExponent){
+			merge_tokens_with_delim(prev, curr, NULL);
+			curr = prev;
+			reverse_merge_nodes(nodes, node->prev, node, curr);
+		}
+
+		if(next->kind != PreExponent){
+			merge_tokens_with_delim(curr, next, NULL);
+			merge_nodes(nodes, node, node->next, curr);
+		}
+
+		curr->kind = Unknown;
+		is_number(self, nodes, node);
+
+		return 1;
+	}
+
+	return 0;
+}
+
+static int semantic_grouping(tokenizer* self) {
+
+	int grouped = 0;
+	for (lnode* node = self->__tokens->first; node; node = node->next) {
+		grouped += rem_grouping(self, self->__tokens, node)
+			|| complex_keyword_grouping(self, self->__tokens, node)
+			|| number_grouping(self, self->__tokens, node);
+	}
+
+	return grouped;
 }
 
 static void finalize_token(tokenizer* self, token_t kind, int token_offset) {
 
 	size_t len = self->__token_len;
-	*(self->__token + len) = 0;
-	token* _token = create_token(self->__token,
-		self->__curr_char - len + 1 + token_offset, self->__curr_char+token_offset, self->__curr_line, self->__curr_line);
-	_token->r = max(_token->r, _token->l);
-	_token->kind = kind;
-	self->__tokens->push(self->__tokens, _token);
+	if(len){
+		*(self->__token + len) = 0;
+		token* _token = create_token(self->__token,
+			self->__curr_char - len + 1 + token_offset,
+			self->__curr_char + token_offset,
+			self->__curr_line,
+			self->__curr_line);
+		_token->r = max(_token->r, _token->l);
+		_token->kind = kind;
+		self->__tokens->push(self->__tokens, _token);
+	}
 	*(self->__token) = 0, self->__token_len = 0, self->state = Free;
 }
 
@@ -422,11 +515,48 @@ static void finalize_delimiter(tokenizer* self, const int walk_result, token_t d
 	self->state = Free;
 }
 
-static lvector* tokenize(tokenizer* self, char* _str) {
+static void log_tokens(lvector* tokens) {
 
+	iterator* it = tokens->iterator(tokens);
+	string* info = get_string();
+	while (it->has_next(it)) {
+		token* _token = it->get_next(it);
+		info->add(info, '[');
+		info->conc(info, get_string_from(_token->str));
+		info->add(info, ',');
+		char buffer[16];
+		sprintf(buffer, "%d", _token->kind);
+		info->conc(info, get_string_from(buffer));
+		info->add(info, ',');
+
+		sprintf(buffer, "%d", _token->line_l);
+		info->conc(info, get_string_from(buffer));
+		info->add(info, ',');
+
+		sprintf(buffer, "%d", _token->l);
+		info->conc(info, get_string_from(buffer));
+		info->add(info, ',');
+
+		sprintf(buffer, "%d", _token->r);
+		info->conc(info, get_string_from(buffer));
+
+		info->add(info, ']');
+		info->add(info, ' ');
+	}
+	Logger->log(log_info, info->get_chars_and_terminate(info));
+}
+
+static token* create_empty_token(int line){
+	token* _token = create_token("", 0, 0, line, line);
+	return _token;
+}
+
+static lvector* tokenize(tokenizer* self, document* doc) {
+
+	self->doc = doc;
 	self->__tokens = create_lvector();
 	self->state = Free;
-	self->__data = _str, *(self->__token) = 0, self->__token_len = 0;
+	self->__data = doc->text, *(self->__token) = 0, self->__token_len = 0;
 	self->__curr_line = 0, self->__curr_char = 0;
 
 	while (self->state != EndOfData) {
@@ -434,6 +564,12 @@ static lvector* tokenize(tokenizer* self, char* _str) {
 		int* walk_result = NULL;
 		if (!character) {
 			finalize_token(self, Unknown, -1);
+			/*
+			 * End line marker if needed
+			 * */
+			token* __last_token = self->__tokens->last ? (token*) self->__tokens->last->val : NULL;
+			if(!__last_token || __last_token->line_r < self->__curr_line)
+				self->__tokens->push(self->__tokens, create_empty_token(self->__curr_line));
 			self->state = EndOfData;
 		}
 		else if (self->state == StringReading || self->state == CommentReading) {
@@ -441,11 +577,11 @@ static lvector* tokenize(tokenizer* self, char* _str) {
 			 * Во время прочтения строки - комментария ничего не надо парсить, кроме конца
 			 * */
 			if (self->state == CommentReading && (self->delimiters[character] == NewlineDelimiter
-				|| *(walk_result = self->delimiter_words->walk(self->delimiter_words,
-					self->__data)) == NewlineDelimiter)) {
+				|| ((walk_result = self->delimiter_words->walk(self->delimiter_words,
+					self->__data)) && *walk_result == NewlineDelimiter))) {
 
 				finalize_token(self, Comment, -1);
-				finalize_delimiter(self, *walk_result, NewlineDelimiter);
+				finalize_delimiter(self, walk_result ? *walk_result : 0, NewlineDelimiter);
 			}
 			else {
 				*(self->__token + self->__token_len++) = character;
@@ -477,70 +613,36 @@ static lvector* tokenize(tokenizer* self, char* _str) {
 		self->__data++, self->__curr_char++;
 	}
 
+	free_wtree(self->doc->variables);
+	self->doc->variables = create_wtree_sized(DEFAULT_VARIABLES_SIZE);
+
+	set_token_types(self);
 	semantic_grouping(self);
 	set_token_types(self);
+
+	log_tokens(self->__tokens);
 
 	return self->__tokens;
 }
 
-//static lvector* make_tokens(tokenizer* self, char* str) {
-//
-//	lvector* vect = create_lvector();
-//	int line_index = 0, l = 0, sz = 0, line = 0;
-//	char curr_token[1024];
-//	while (*str) {
-//		if (isspace(*str) || *str=='\"' || *str=='\'') {
-//			end_token(vect, self, curr_token, &sz, l, line);
-//			l = line_index;
-//			if (*str=='\"') {
-//				curr_token[sz++] = *(str++);
-//				while (*str && *str!='\"')
-//					curr_token[sz++] = *(str++);
-//				end_token(vect, self, curr_token, &sz, l, line);
-//			}
-//			else if (*str=='\'' || *str=='\n' || (*(str+1) && *str=='\r' && *(str+1)=='\n')) {
-//
-//				while (*str && !(*str=='\n' || (*(str+1) && *str=='\r' && *(str+1)=='\n')))
-//					curr_token[sz++] = *(str++);
-//
-//				end_token(vect, self, curr_token, &sz, l, line);
-//				line++, line_index = -1;
-//			}
-//		}
-//		else if (isprint(*str)) {
-//			if (!sz) l = line_index;
-//			curr_token[sz++] = *str;
-//		}
-//		str++, line_index++;
-//	}
-//	//last token
-//	curr_token[sz] = 0;
-//	vect->push(vect, get_token(self, copystr(curr_token), l, max(l+sz-1, 0), line, line));
-//
-//	return vect;
-//}
+lvector* make_tokens_with_range(lvector *tokens, range* rng) {
 
-static lvector* make_tokens_with_range(tokenizer* self, char* text, range* rng) {
-
-	lvector* tokens = self->make_tokens(self, text);
 	lvector* result = create_lvector();
 	iterator* it = tokens->iterator(tokens);
 	while (it->has_next(it)) {
 		token* tkn = it->get_next(it);
 		if ((tkn->line_l > rng->line_l || (tkn->line_l == rng->line_l && tkn->l >= rng->l))
-		&& (tkn->line_r < rng->line_r || (tkn->line_r == rng->line_r && tkn->r <= rng->r)))
+			&& (tkn->line_r < rng->line_r || (tkn->line_r == rng->line_r && tkn->r <= rng->r)))
 			result->push(result, tkn);
 	}
-	free_lvector_no_values(tokens);
 
 	return result;
 }
 
-static vector* make_tokens_with_lines(tokenizer* self, char* text) {
+vector* make_tokens_with_lines(lvector* tokens) {
 
 	vector* lines = create_vector();
 	int curr_line = -1;
-	lvector* tokens = self->make_tokens(self, text);
 	iterator* it = tokens->iterator(tokens);
 
 	while (it->has_next(it)) {
@@ -550,7 +652,6 @@ static vector* make_tokens_with_lines(tokenizer* self, char* text) {
 		vector* last_line = lines->last(lines);
 		last_line->push(last_line, tkn);
 	}
-	free_lvector_no_values(tokens);
 
 	return lines;
 }
@@ -569,13 +670,26 @@ token* find_token(vector* tokens_line, int pos) {
 	return result_tkn;
 }
 
+token* find_token_on_line(lvector* tokens, int line, int pos){
+	iterator* it = tokens->iterator(tokens);
+	token* result_tkn = NULL;
+	while (it->has_next(it)) {
+		token* tkn = it->get_next(it);
+		if (tkn->line_l < line || (tkn->line_l == line && tkn->l <= pos))
+			result_tkn = tkn;
+		else
+			break;
+	}
+	return result_tkn;
+}
+
 static wtree* load_keywords(json_value* config) {
 
 	wtree* words = create_wtree();
 	json_value* keywords = get_by_name(config, "keywords");
 	for (int i = 0; i < keywords->u.array.length; ++i) {
 		json_value* keyword = keywords->u.array.values[i];
-		gwkeyword *payload = get_gwkeyword(
+		gwkeyword* payload = get_gwkeyword(
 			get_by_name(keyword, "name")->u.string.ptr,
 			get_by_name(keyword, "type")->u.string.ptr,
 			get_by_name(keyword, "purpose")->u.string.ptr,
@@ -646,8 +760,6 @@ tokenizer* create_tokenizer(json_value* config) {
 	fill_delimiters(t);
 	t->__token = malloc(sizeof(char) * 1024);
 	t->make_tokens = tokenize;
-	t->make_tokens_with_lines = make_tokens_with_lines;
-	t->make_tokens_with_range = make_tokens_with_range;
 	return t;
 }
 
@@ -659,8 +771,8 @@ void free_token_item(token* t) {
 
 void free_token_items(lvector* items) {
 
-	iterator *it = items->iterator(items);
-	while(it->has_next(it)) {
+	iterator* it = items->iterator(items);
+	while (it->has_next(it)) {
 		free_token_item(it->get_next(it));
 	}
 	free_lvector_no_values(items);
@@ -670,7 +782,7 @@ void free_tokens(vector* tokens) {
 
 	iterator* it = tokens->iterator(tokens);
 	while (it->has_next(it))
-		free_vector(it->get_next(it));
+		free_vector_no_values(it->get_next(it));
 	free_vector_no_values(tokens);
 }
 
