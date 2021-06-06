@@ -9,7 +9,8 @@
 - `Variables declaration`
 ### Installation
 - First method
-    - `git clone` 
+    - `git clone https://github.com/sthfaceless/gw-basic-ls.git` 
+    - `npm run postinstall`
     - `npm run build` or `cmake --build server/out --target gw_basic_server -lm`
     - `vsce package`
     - `install your .vsix file to vscode`

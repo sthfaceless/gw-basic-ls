@@ -26,7 +26,7 @@
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
 		"build": "cmake --build server/out --target gw_basic_server -lm",
-		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"postinstall": "npm install && cd client && npm install && cd ..",
 		"test": "sh ./scripts/e2e.sh"
 	},
 	"devDependencies": {
