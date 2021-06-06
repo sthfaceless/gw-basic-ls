@@ -5,6 +5,11 @@
 #ifndef GW_BASIC_SERVER_TYPES_H
 #define GW_BASIC_SERVER_TYPES_H
 
+#define LINE_SEPARATOR "\n"
+#ifdef WINDOWS
+#define LINE_SEPARATOR "\r\n"
+#endif
+
 #include "string.h"
 #include "stdlib.h"
 
@@ -13,11 +18,11 @@ typedef long long ll;
 typedef long double ld;
 
 typedef enum {
-	INT,
-	STRING,
-	DOUBLE,
-	CHAR,
-	STRUCT
+	INT_KEY,
+	STRING_KEY,
+	DOUBLE_KEY,
+	CHAR_KEY,
+	STRUCT_KEY
 } type_t;
 
 typedef int (* comp)(const void*, const void*);
@@ -26,6 +31,6 @@ void swap(void** a, void** b);
 int* wrapi(int val);
 char* wrapc(char val);
 void reverse_charr(char* arr, int sz);
-ll max(ll val1, ll val2);
-ll min(ll val1, ll val2);
+ll getmax(ll val1, ll val2);
+ll getmin(ll val1, ll val2);
 #endif //GW_BASIC_SERVER_TYPES_H

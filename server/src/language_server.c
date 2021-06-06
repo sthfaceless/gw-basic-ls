@@ -94,12 +94,16 @@ static json_value* get_documentation_by_keyword(gwkeyword *keyword){
 	string* markdown = get_string_from("### ");
 	markdown->conc(markdown, get_string_from(keyword->name));
 
-	markdown->conc(markdown, get_string_from("\n#### "));
+	markdown->conc(markdown, get_string_from(LINE_SEPARATOR));
+	markdown->conc(markdown, get_string_from("#### "));
 	markdown->conc(markdown, get_string_from(keyword->purpose));
 
-	markdown->conc(markdown, get_string_from("\n```\n"));
+	markdown->conc(markdown, get_string_from(LINE_SEPARATOR));
+	markdown->conc(markdown, get_string_from("```"));
+	markdown->conc(markdown, get_string_from(LINE_SEPARATOR));
 	markdown->conc(markdown, get_string_from(keyword->syntax));
-	markdown->conc(markdown, get_string_from("\n```"));
+	markdown->conc(markdown, get_string_from(LINE_SEPARATOR));
+	markdown->conc(markdown, get_string_from("```"));
 
 	json_object_push(content, "value", json_string_new(markdown->get_chars_and_terminate(markdown)));
 
@@ -188,7 +192,7 @@ static json_value* get_tokens_response(language_server* self, const json_value* 
 	while(it->has_next(it)) {
 		token* tok = it->get_next(it);
 		tok->kind = map_type_to_semantic_token(tok->kind);
-		if (tok->kind!=Unknown) {
+		if (tok->kind!=UnknownKind) {
 
 			json_array_push(arr, json_integer_new(previous_token ? tok->line_l - previous_token->line_r : tok->line_l));
 			json_array_push(arr, json_integer_new(previous_token && previous_token->line_r == tok->line_l ?
@@ -449,7 +453,7 @@ language_server* create_language_server(char* config_file) {
 	ls->send_message_buf = malloc(MAX_LSP_MESSAGE_SIZE);
 	ls->config = load_config_file(config_file);
 	ls->parser = init_parser(ls->config);
-	ls->documents = create_map(STRING);
+	ls->documents = create_map(STRING_KEY);
 
 	return ls;
 }

@@ -7,6 +7,7 @@
 
 #include "stdlib.h"
 #include "stdio.h"
+#include "types.h"
 
 typedef struct logger logger;
 

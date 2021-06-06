@@ -3,6 +3,7 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import * as path from 'path';
+import * as os from 'os';
 import {ExtensionContext, workspace} from 'vscode';
 
 import {Executable, LanguageClient, LanguageClientOptions, ServerOptions} from 'vscode-languageclient/node';
@@ -11,15 +12,14 @@ let client: LanguageClient;
 
 export function activate(context: ExtensionContext) {
 
-	// let serverStartupCommand = context.asAbsolutePath(
-    //     path.join('server', 'out', 'gw_basic_server')
-    // );
-	let serverStartupCommand = path.join(__dirname, '..', '..', 'server', 'out', 'gw_basic_server');
+	let serverStartupCommand = os.platform() === 'linux' ?
+		 path.join(__dirname, '..', '..', 'server', 'out', 'gw_basic_server')
+		 : path.join(__dirname, '..', '..', 'server', 'outw', 'gw_basic_server.exe');
 	console.log(serverStartupCommand);
 	let serverExe: Executable = {
 		command: serverStartupCommand,	
 		args: ['config_file=' + path.join(__dirname, '..', '..', 'data', 'config.json'),
-				'log_file='+path.join(__dirname, '..', '..', 'log.txt')],
+				'log_file='+path.join(__dirname, '..', '..', 'log')],
 		options: {
 			env: process.env,
 			shell: true
@@ -32,7 +32,8 @@ export function activate(context: ExtensionContext) {
 	}
 
 	let clientOptions: LanguageClientOptions = {
-		documentSelector: [{ scheme: 'file', pattern: '**'}],
+		
+		documentSelector: [{pattern: '**/*.{bas,gwbas,BAS,GWBAS}'}],
 		synchronize: {
 			fileEvents: workspace.createFileSystemWatcher('**/.clientrc')
 		}

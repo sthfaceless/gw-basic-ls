@@ -56,15 +56,15 @@ static ull ptr_hasher(void* _val) {
 
 hasher get_hasher(type_t key_t) {
 	switch (key_t) {
-	case INT:
+	case INT_KEY:
 		return ll_hasher;
-	case DOUBLE:
+	case DOUBLE_KEY:
 		return ld_hasher;
-	case CHAR:
+	case CHAR_KEY:
 		return ch_hasher;
-	case STRING:
+	case STRING_KEY:
 		return str_hasher;
-	case STRUCT:
+	case STRUCT_KEY:
 		return ptr_hasher;
 	default:
 		return ptr_hasher;

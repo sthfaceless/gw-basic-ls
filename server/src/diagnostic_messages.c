@@ -25,7 +25,7 @@ diagnostic* too_long_line(int line, int last_character) {
 	dgn->r = last_character;
 	dgn->line = line;
 	dgn->t = Error;
-	dgn->message = "Длина строки не может превышать 256 символов";
+	dgn->message = "Max line length is 256 characters";
 	return dgn;
 }
 
@@ -35,7 +35,7 @@ diagnostic* must_begin_number(int line, int last_character) {
 	dgn->r = last_character;
 	dgn->line = line;
 	dgn->t = Error;
-	dgn->message = "Строка обязана начинаться с цифры";
+	dgn->message = "Line must begin with number";
 	return dgn;
 }
 
@@ -45,6 +45,6 @@ diagnostic* begin_number_too_large(int line, int l, int r){
 	dgn->r = r;
 	dgn->line = line;
 	dgn->t = Error;
-	dgn->message = "Номер строки должен быть в пределах от 0 до 65529";
+	dgn->message = "Line number must be in range 0-65529";
 	return dgn;
 }

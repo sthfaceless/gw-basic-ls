@@ -8,6 +8,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include "types.h"
 #include "ctype.h"
 #include "cstring.h"
 #include "logger.h"
@@ -42,7 +43,7 @@ typedef enum {
 	Number,//19
 	Regexp,//20
 	Operator,//21
-	Unknown,//22
+	UnknownKind,//22
 	ArithmeticOperator,//23
 	LogicalOperator,//24
 	SpaceDelimiter,//25

@@ -59,7 +59,7 @@ int main(int argc, char* argv[]) {
 
 	message* msg = create_message();
 	language_server* ls = create_language_server(CONFIG_FILE);
-	FILE* fptr = fopen("/home/danil/CLionProjects/gw_basic_server/log2.txt", "a");
+	FILE* fptr = fopen(conc(LOG_FILE, "2"), "a");
 
 	while (1) {
 
@@ -79,6 +79,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		else {
+			Logger->log(log_debug, "sleeping a bit...");
 			sleep_thread(500);
 		}
 	}

@@ -124,7 +124,7 @@ vector* match(const char* str, char* pattern) {
 
 	static map* pattern_cache = NULL;
 	if (pattern_cache==NULL)
-		pattern_cache = create_map(STRING);
+		pattern_cache = create_map(STRING_KEY);
 
 	void* req_ptr = pattern_cache->get(pattern_cache, pattern);
 	if (req_ptr==NULL) {
@@ -173,8 +173,8 @@ char* read_file(const char* filename) {
 	return res;
 }
 
-int is_eol(char ch) {
-	return ch=='\r' || ch=='\n';
+int is_eol(char* ch) {
+	return !strcmp(ch, "\n") || !strcmp(ch, "\r\n");
 }
 
 char* strlower(char* str) {

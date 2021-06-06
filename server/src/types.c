@@ -38,15 +38,15 @@ static int ptr_comp(const void* arg1, const void* arg2){
 
 comp get_comparator(type_t type) {
 	switch (type) {
-		case INT:
+		case INT_KEY:
 			return int_comp;
-		case DOUBLE:
+		case DOUBLE_KEY:
 			return double_comp;
-		case CHAR:
+		case CHAR_KEY:
 			return ch_comp;
-		case STRING:
+		case STRING_KEY:
 			return str_comp;
-		case STRUCT:
+		case STRUCT_KEY:
 			return ptr_comp;
 		default:
 			return ptr_comp;
@@ -80,10 +80,10 @@ void reverse_charr(char* arr, int sz){
 	}
 }
 
-ll max(ll val1, ll val2){
+ll getmax(ll val1, ll val2){
 	return val1 > val2 ? val1 : val2;
 }
 
-ll min(ll val1, ll val2){
+ll getmin(ll val1, ll val2){
 	return val1 < val2 ? val1 : val2;
 }

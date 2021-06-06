@@ -9,19 +9,19 @@ static void dolog(const log_type type, const char *str) {
     FILE *fptr = fopen(Logger->filename, "a");
     switch (type) {
         case log_info:
-            fprintf(fptr, "[Info]: %s \r\n", str);
+            fprintf(fptr, "[Info]: %s%s", str, LINE_SEPARATOR);
             break;
         case log_error:
-            fprintf(fptr, "[Error]: %s\r\n", str);
+            fprintf(fptr, "[Error]: %s%s", str,  LINE_SEPARATOR);
             break;
         case log_request:
-            fprintf(fptr, "[Request]: %s\r\n", str);
+            fprintf(fptr, "[Request]: %s%s", str, LINE_SEPARATOR);
             break;
         case log_response:
-            fprintf(fptr, "[Response]: %s\r\n", str);
+            fprintf(fptr, "[Response]: %s%s", str, LINE_SEPARATOR);
             break;
 		case log_debug:
-			fprintf(fptr, "[Debug]: %s\r\n", str);
+			fprintf(fptr, "[Debug]: %s%s", str, LINE_SEPARATOR);
 			break;
         default:
             break;

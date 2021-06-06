@@ -80,7 +80,7 @@ int map_type_to_semantic_token(token_t type) {
 		mapper[Number] = Number;
 		mapper[Regexp] = Regexp;
 		mapper[Operator] = Operator;
-		mapper[Unknown] = Unknown;
+		mapper[UnknownKind] = UnknownKind;
 
 		/*
 		 * Extra types
@@ -88,12 +88,12 @@ int map_type_to_semantic_token(token_t type) {
 		mapper[ArithmeticOperator] = Operator;
 		mapper[LogicalOperator] = Operator;
 
-		mapper[SpaceDelimiter] = Unknown;
-		mapper[NewlineDelimiter] = Unknown;
+		mapper[SpaceDelimiter] = UnknownKind;
+		mapper[NewlineDelimiter] = UnknownKind;
 		mapper[CommentDelimiter] = Modifier;
 		mapper[StatementDelimiter] = Modifier;
 		mapper[ArgumentDelimiter] = Modifier;
-		mapper[ArgumentGroupDelimiter] = Unknown;
+		mapper[ArgumentGroupDelimiter] = UnknownKind;
 		mapper[EqualDelimiter] = Operator;
 		mapper[IODelimiter] = Modifier;
 		mapper[StringDelimiter] = String;
@@ -110,7 +110,7 @@ int map_type_to_semantic_token(token_t type) {
 		mapper[IntegerValue] = Number;
 		mapper[SinglePrecisionValue] = Number;
 		mapper[DoublePrecisionValue] = Number;
-		mapper[PreExponent] = Unknown;
+		mapper[PreExponent] = UnknownKind;
 
 		mapper[LineNumber] = Number;
 		mapper[DimStatement] = Keyword;
@@ -138,7 +138,7 @@ token* create_token(const char* str, int l, int r, int line_l, int line_r) {
 	t->r = r;
 	t->line_l = line_l;
 	t->line_r = line_r;
-	t->kind = Unknown;
+	t->kind = UnknownKind;
 	return t;
 }
 static void merge_tokens_with_delim(token* firstToken, token* secondToken, char *delim){
@@ -179,7 +179,7 @@ static int is_keyword(tokenizer* self, lvector* nodes, lnode* node) {
 	if (keyword_result) {
 		_token->kind = keyword_result->kind;
 	}
-	return _token->kind != Unknown;
+	return _token->kind != UnknownKind;
 }
 
 static int is_variable(tokenizer* self, lvector* nodes, lnode* node){
@@ -188,7 +188,7 @@ static int is_variable(tokenizer* self, lvector* nodes, lnode* node){
 	if (variable_result) {
 		_token->kind = variable_result->kind;
 	}
-	return _token->kind != Unknown;
+	return _token->kind != UnknownKind;
 }
 
 static int is_line_number(tokenizer* self, lvector* nodes, lnode* node) {
@@ -199,7 +199,7 @@ static int is_line_number(tokenizer* self, lvector* nodes, lnode* node) {
 		if (matchb(str, "^[1-9][0-9]{0,16}$"))
 			_token->kind = LineNumber;
 	}
-	return _token->kind != Unknown;
+	return _token->kind != UnknownKind;
 }
 
 static int is_integer_value(const char *str){
@@ -229,7 +229,7 @@ static int is_number(tokenizer* self, lvector* nodes, lnode* node) {
 	/*
 	 * В случае, если в конце был кастящий символ
 	 * */
-	if (_token->kind != Unknown) {
+	if (_token->kind != UnknownKind) {
 		char type = *(str + strlen(str) - 1);
 		switch (type) {
 		case '%':
@@ -246,7 +246,7 @@ static int is_number(tokenizer* self, lvector* nodes, lnode* node) {
 		}
 	}
 
-	return _token->kind != Unknown;
+	return _token->kind != UnknownKind;
 }
 
 gwkeyword* get_gwkeyword(char* name,
@@ -344,13 +344,13 @@ static int is_new_variable(tokenizer* self, lvector* nodes, lnode* node) {
 			self->doc->variables->add(self->doc->variables, _token->str, create_new_variable(_token));
 		}
 	}
-	return _token->kind != Unknown;
+	return _token->kind != UnknownKind;
 }
 
 static int set_token_type(tokenizer* self, lvector* nodes, lnode* node) {
 
 	token* _token = node->val;
-	if (_token->kind != Unknown)
+	if (_token->kind != UnknownKind)
 		return 1;
 
 	const char* str = _token->str;
@@ -460,7 +460,7 @@ static int number_grouping(tokenizer* self, lvector* nodes, lnode* node){
 			merge_nodes(nodes, node, node->next, curr);
 		}
 
-		curr->kind = Unknown;
+		curr->kind = UnknownKind;
 		is_number(self, nodes, node);
 
 		return 1;
@@ -491,7 +491,7 @@ static void finalize_token(tokenizer* self, token_t kind, int token_offset) {
 			self->__curr_char + token_offset,
 			self->__curr_line,
 			self->__curr_line);
-		_token->r = max(_token->r, _token->l);
+		_token->r = getmax(_token->r, _token->l);
 		_token->kind = kind;
 		self->__tokens->push(self->__tokens, _token);
 	}
@@ -563,7 +563,11 @@ static lvector* tokenize(tokenizer* self, document* doc) {
 		char character = *self->__data;
 		int* walk_result = NULL;
 		if (!character) {
-			finalize_token(self, Unknown, -1);
+
+			token_t last_token_kind = UnknownKind;
+			if(self->state == CommentReading) last_token_kind = Comment;
+
+			finalize_token(self, last_token_kind, -1);
 			/*
 			 * End line marker if needed
 			 * */
@@ -591,7 +595,7 @@ static lvector* tokenize(tokenizer* self, document* doc) {
 		}
 		else if (self->delimiters[character]
 			|| (walk_result = self->delimiter_words->walk(self->delimiter_words, self->__data))) {
-			finalize_token(self, Unknown, -1);
+			finalize_token(self, UnknownKind, -1);
 			ll delimiter_kind = self->delimiters[character] | (walk_result ? *walk_result : 0);
 			if (!(delimiter_kind == StringDelimiter
 				|| delimiter_kind == CommentDelimiter)) {

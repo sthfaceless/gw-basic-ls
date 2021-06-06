@@ -35,7 +35,7 @@ completion_t map_token_type_to_completion(token_t type) {
 		mapper[Number] = CompletionUnit;
 		mapper[Regexp] = CompletionText;
 		mapper[Operator] = CompletionOperator;
-		mapper[Unknown] = CompletionUnknown;
+		mapper[UnknownKind] = CompletionUnknown;
 	}
 
 	return mapper[map_type_to_semantic_token(type)];
@@ -72,7 +72,7 @@ char* map_kind_to_string(token_t type) {
 		mapper[Number] = "Number";
 		mapper[Regexp] = "Regexp";
 		mapper[Operator] = "Operator";
-		mapper[Unknown] = "Unknown";
+		mapper[UnknownKind] = "Unknown";
 	}
 
 	return mapper[map_type_to_semantic_token(type)];

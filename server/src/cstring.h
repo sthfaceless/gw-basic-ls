@@ -73,7 +73,7 @@ char* read_file(const char* filename);
 vector * get_lines(char *str);
 vector *strsplit(char *str, char tok);
 char *substr(char * str, int begin, int end);
-int is_eol(char ch);
+int is_eol(char* ch);
 char* strlower(char *str);
 char* strupper(char *str);
 char* conc(char *str1, char *str2);
