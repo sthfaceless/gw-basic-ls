@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../src/json.h
+inttypes.h
+-
+stdlib.h
+-
+string.h
+-
+
+/home/danil/CLionProjects/gw_basic_server/server/src/json-builder.c
+json-builder.h
+/home/danil/CLionProjects/gw_basic_server/server/src/json-builder.h
+string.h
+-
+assert.h
+-
+stdio.h
+-
+
+/home/danil/CLionProjects/gw_basic_server/server/src/json-builder.h
+json.h
+-
+

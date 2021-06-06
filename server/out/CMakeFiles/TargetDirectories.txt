@@ -1,0 +1,3 @@
+/home/danil/CLionProjects/gw_basic_server/server/out/CMakeFiles/rebuild_cache.dir
+/home/danil/CLionProjects/gw_basic_server/server/out/CMakeFiles/edit_cache.dir
+/home/danil/CLionProjects/gw_basic_server/server/out/CMakeFiles/gw_basic_server.dir

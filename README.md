@@ -10,7 +10,7 @@
 ### Installation
 - First method
     - `git clone` 
-    - `npm run build`
+    - `npm run build` or `cmake --build server/out --target gw_basic_server -lm`
     - `vsce package`
     - `install your .vsix file to vscode`
 - Second method

@@ -60,7 +60,7 @@ cmake-build-windows/**
 .vscodeignore
 .eslintrc.js
 pcbasic-v1.2.14/**
-**/out/**
+client/out/**
 **/outw/**
 **/sandbox/**
 **/*.vsix

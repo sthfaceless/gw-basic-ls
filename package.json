@@ -3,7 +3,7 @@
 	"description": "gw-basic language server",
 	"author": "sthfaceless",
 	"license": "MIT",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"publisher": "sthfaceless",
 	"icon": "icon.jpg",
 	"repository": {
@@ -25,7 +25,7 @@
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
-		"build": "/home/danil/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/203.5981.166/bin/cmake/linux/bin/cmake --build /home/danil/CLionProjects/gw_basic_server/server/out --target gw_basic_server -lm",
+		"build": "cmake --build server/out --target gw_basic_server -lm",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
 		"test": "sh ./scripts/e2e.sh"
 	},

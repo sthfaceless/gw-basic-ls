@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="gw_basic_server"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/danil/CLionProjects/gw_basic_server/server/out"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/danil/CLionProjects/gw_basic_server/server/out"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/danil/CLionProjects/gw_basic_server/server/out"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gw_basic_server">
+				<Option output="/home/danil/CLionProjects/gw_basic_server/server/out/gw_basic_server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/danil/CLionProjects/gw_basic_server/server/out"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMY_DEBUG"/>
+					<Add option="-DHAVE_CONFIG_H"/>
+					<Add option="-DLINUX"/>
+					<Add directory="/home/danil/CLionProjects/gw_basic_server/server/src"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 gw_basic_server"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="gw_basic_server/fast">
+				<Option output="/home/danil/CLionProjects/gw_basic_server/server/out/gw_basic_server" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/danil/CLionProjects/gw_basic_server/server/out"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DMY_DEBUG"/>
+					<Add option="-DHAVE_CONFIG_H"/>
+					<Add option="-DLINUX"/>
+					<Add directory="/home/danil/CLionProjects/gw_basic_server/server/src"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 gw_basic_server/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/danil/CLionProjects/gw_basic_server/server/out/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/config.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/cstring.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/cstring.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/debug.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/debug.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/diagnostic_messages.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/diagnostic_messages.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/json-builder.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/json-builder.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/json.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/json.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/json_helper.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/json_helper.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/language_server.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/language_server.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/logger.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/logger.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/main.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/map.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/map.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/message.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/message.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/parser.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/parser.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_byte_order.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_chartables.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_compile.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_config.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_dfa_exec.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_exec.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_fullinfo.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_get.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_globals.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_internal.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_jit_compile.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_maketables.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_newline.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_ord2utf8.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_refcount.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_string_utils.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_study.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_tables.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_ucd.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_valid_utf8.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_version.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/pcre_xclass.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/tokenizer.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/tokenizer.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/types.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/types.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/ucp.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/vector.c">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/server/src/vector.h">
+			<Option target="gw_basic_server"/>
+		</Unit>
+		<Unit filename="/home/danil/CLionProjects/gw_basic_server/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

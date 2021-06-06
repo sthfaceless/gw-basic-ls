@@ -1,0 +1,2 @@
+/usr/bin/ar qc libjson-builder.a  CMakeFiles/json-builder.dir/server/src/json-builder.c.o
+/usr/bin/ranlib libjson-builder.a
