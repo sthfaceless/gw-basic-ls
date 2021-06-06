@@ -21,7 +21,7 @@ typedef struct language_server language_server;
 struct language_server {
 	gwparser* parser;
 	map * documents;
-	char *send_message_buf;
+	char *send_message_buf, *line_separator;
 	json_value *config;
     _Bool (*process)(language_server *, const char *, const size_t);
 };

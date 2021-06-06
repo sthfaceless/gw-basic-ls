@@ -5,9 +5,18 @@
 #ifndef GW_BASIC_SERVER_TYPES_H
 #define GW_BASIC_SERVER_TYPES_H
 
-#define LINE_SEPARATOR "\n"
 #ifdef WINDOWS
 #define LINE_SEPARATOR "\r\n"
+#endif
+#ifndef LINE_SEPARATOR
+#define LINE_SEPARATOR "\n"
+#endif
+
+#ifdef WINDOWS
+#define VS_CODE_SEPARATOR "\n"
+#endif
+#ifndef VS_CODE_SEPARATOR
+#define VS_CODE_SEPARATOR "\r\n"
 #endif
 
 #include "string.h"

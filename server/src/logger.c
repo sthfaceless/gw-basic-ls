@@ -6,7 +6,14 @@
 
 
 static void dolog(const log_type type, const char *str) {
+
+	/*Turn off log*/
+#ifndef MY_DEBUG
+	return;
+#endif
+
     FILE *fptr = fopen(Logger->filename, "a");
+	FILE *fout = fopen(conc(copystr(Logger->filename), "3"), "a");
     switch (type) {
         case log_info:
             fprintf(fptr, "[Info]: %s%s", str, LINE_SEPARATOR);
@@ -21,11 +28,12 @@ static void dolog(const log_type type, const char *str) {
             fprintf(fptr, "[Response]: %s%s", str, LINE_SEPARATOR);
             break;
 		case log_debug:
-			fprintf(fptr, "[Debug]: %s%s", str, LINE_SEPARATOR);
+			fprintf(fout, "%s", str);
 			break;
         default:
             break;
     }
+    fclose(fout);
     fclose(fptr);
 }
 

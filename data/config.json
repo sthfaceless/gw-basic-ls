@@ -1662,5 +1662,6 @@
             "syntax": "wend",
             "kind": 15
         }
-    ]
+    ],
+    "line.separator":  "\r\n"
 }

@@ -337,21 +337,35 @@ static json_value* get_initialization_response(const json_value* val) {
 	return prepare_response_object(val, initialize_result);
 }
 
-static void send_message(char* send_message_buf, json_value* val) {
+static void send_message(language_server *self, char* send_message_buf, json_value* val) {
 
 	json_object_push(val, "jsonrpc", json_string_new("2.0"));
 
 	char* buf = send_message_buf;
 	json_serialize(buf, val);
-	size_t json_size = strlen(buf)*sizeof(char);
+	size_t json_size = strlen(buf);
 
 	Logger->log(log_response, buf);
 
-	fprintf(stdout, "Content-Length: %lu\r\n", json_size);
-	fprintf(stdout, "Content-Type: application/vscode-jsonrpc;charset=utf-8\r\n\r\n");
+	fprintf(stdout, "Content-Length: %lu%s", json_size, VS_CODE_SEPARATOR);
+	fprintf(stdout, "Content-Type: application/vscode-jsonrpc;charset=utf-8%s%s", VS_CODE_SEPARATOR, VS_CODE_SEPARATOR);
 	fprintf(stdout, "%s", buf);
 
 	fflush(stdout);
+
+	/*
+	 * For debug
+	 * //TODO
+	 * */
+//	char *response = malloc(sizeof (char) * MAX_LSP_MESSAGE_SIZE);
+//
+//	sprintf(response, "Content-Length: %lu%s", json_size, self->line_separator);
+//	sprintf(response+strlen(response), "Content-Type: application/vscode-jsonrpc;charset=utf-8%s%s", self->line_separator, self->line_separator);
+//	sprintf(response+strlen(response), "%s", buf);
+//
+//	Logger->log(log_debug, response);
+//
+//	free(response);
 }
 
 static void update_document(language_server* self, const json_value* val) {
@@ -421,7 +435,7 @@ static _Bool process(language_server* self, const char* str, const size_t size) 
 	}
 
 	if (response->type!=json_null)
-		send_message(self->send_message_buf, response);
+		send_message(self, self->send_message_buf, response);
 
 	json_value_free(response);
 	json_value_free(val);
@@ -452,6 +466,7 @@ language_server* create_language_server(char* config_file) {
 	ls->process = process;
 	ls->send_message_buf = malloc(MAX_LSP_MESSAGE_SIZE);
 	ls->config = load_config_file(config_file);
+	ls->line_separator = copystr(get_by_name(ls->config, "line.separator")->u.string.ptr);
 	ls->parser = init_parser(ls->config);
 	ls->documents = create_map(STRING_KEY);
 

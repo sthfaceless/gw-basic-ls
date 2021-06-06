@@ -64,3 +64,4 @@ pcbasic-v1.2.14/**
 **/outw/**
 **/sandbox/**
 **/*.vsix
+log*

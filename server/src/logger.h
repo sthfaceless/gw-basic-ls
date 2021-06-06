@@ -8,6 +8,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "types.h"
+#include "cstring.h"
 
 typedef struct logger logger;
 

@@ -79,7 +79,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		else {
-			Logger->log(log_debug, "sleeping a bit...");
+			Logger->log(log_info, "sleeping a bit...");
 			sleep_thread(500);
 		}
 	}
