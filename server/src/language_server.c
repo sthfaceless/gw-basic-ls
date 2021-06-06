@@ -357,15 +357,15 @@ static void send_message(language_server *self, char* send_message_buf, json_val
 	 * For debug
 	 * //TODO
 	 * */
-//	char *response = malloc(sizeof (char) * MAX_LSP_MESSAGE_SIZE);
-//
-//	sprintf(response, "Content-Length: %lu%s", json_size, self->line_separator);
-//	sprintf(response+strlen(response), "Content-Type: application/vscode-jsonrpc;charset=utf-8%s%s", self->line_separator, self->line_separator);
-//	sprintf(response+strlen(response), "%s", buf);
-//
-//	Logger->log(log_debug, response);
-//
-//	free(response);
+	char *response = malloc(sizeof (char) * MAX_LSP_MESSAGE_SIZE);
+
+	sprintf(response, "Content-Length: %lu%s", json_size, self->line_separator);
+	sprintf(response+strlen(response), "Content-Type: application/vscode-jsonrpc;charset=utf-8%s%s", self->line_separator, self->line_separator);
+	sprintf(response+strlen(response), "%s", buf);
+
+	Logger->log(log_debug, response);
+
+	free(response);
 }
 
 static void update_document(language_server* self, const json_value* val) {

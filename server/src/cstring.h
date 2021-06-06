@@ -18,8 +18,8 @@
 #define DEFAULT_BUFF_SIZE 16
 #define MAX_FILE_SIZE 1024
 #define WORD_TREE_SIZE 1 << 12
-#define WORDS_BEGIN_SYMBOL 32
-#define WORDS_END_SYMBOL 127
+#define WORDS_BEGIN_SYMBOL 0
+#define WORDS_END_SYMBOL 128
 
 typedef struct string string;
 

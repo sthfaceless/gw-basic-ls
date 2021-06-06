@@ -580,9 +580,10 @@ static lvector* tokenize(tokenizer* self, document* doc) {
 			/*
 			 * Во время прочтения строки - комментария ничего не надо парсить, кроме конца
 			 * */
-			if (self->state == CommentReading && (self->delimiters[character] == NewlineDelimiter
-				|| ((walk_result = self->delimiter_words->walk(self->delimiter_words,
-					self->__data)) && *walk_result == NewlineDelimiter))) {
+			if (self->state == CommentReading && (
+				((walk_result = self->delimiter_words->walk(self->delimiter_words,
+					self->__data)) && *walk_result == NewlineDelimiter)
+					|| self->delimiters[character] == NewlineDelimiter)) {
 
 				finalize_token(self, Comment, -1);
 				finalize_delimiter(self, walk_result ? *walk_result : 0, NewlineDelimiter);
@@ -593,8 +594,9 @@ static lvector* tokenize(tokenizer* self, document* doc) {
 					finalize_token(self, String, 0);
 			}
 		}
-		else if (self->delimiters[character]
-			|| (walk_result = self->delimiter_words->walk(self->delimiter_words, self->__data))) {
+		else if ((walk_result = self->delimiter_words->walk(self->delimiter_words, self->__data)) ||
+			self->delimiters[character]
+			) {
 			finalize_token(self, UnknownKind, -1);
 			ll delimiter_kind = self->delimiters[character] | (walk_result ? *walk_result : 0);
 			if (!(delimiter_kind == StringDelimiter

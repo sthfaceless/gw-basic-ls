@@ -3,7 +3,7 @@
 	"description": "gw-basic language server",
 	"author": "sthfaceless",
 	"license": "MIT",
-	"version": "1.0.5",
+	"version": "1.0.8",
 	"publisher": "sthfaceless",
 	"icon": "icon.jpg",
 	"repository": {

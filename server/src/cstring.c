@@ -179,8 +179,9 @@ int is_eol(char* ch) {
 
 char* strlower(char* str) {
 	char* _str = str;
-	while (*str) {
-		*str = tolower(*str);
+	while(*str){
+		if(*str >= 'A' && *str <= 'Z')
+			*str += 32;
 		str++;
 	}
 	return _str;
@@ -262,7 +263,7 @@ char* concd(char *str1, char *str2, char *delim){
 }
 
 char cast_char_to_wtree_edge(char ch){
-	return ch-WORDS_BEGIN_SYMBOL;
+	return ch;
 }
 
 static int create_wtree_node(wtree* self, void* payload, char ch, int parent) {
@@ -283,7 +284,7 @@ static int create_wtree_node(wtree* self, void* payload, char ch, int parent) {
 
 static void add_wtree(wtree* self, const char* str, void* payload) {
 	int** curr = self->tree;
-	while (isprint(*str)) {
+	while (*str) {
 		char ch = cast_char_to_wtree_edge(*str);
 		if (!(*curr)[ch]) {
 			int node_id = create_wtree_node(self, NULL, *str, curr-self->tree);
@@ -298,7 +299,7 @@ static void add_wtree(wtree* self, const char* str, void* payload) {
 }
 static int vfind(int v, wtree* self,const char* str){
 	int** curr = self->tree+v;
-	while (isprint(*str)) {
+	while (*str) {
 		char ch = cast_char_to_wtree_edge(*str);
 		if (!(*curr)[ch])
 			return 0;
@@ -320,9 +321,11 @@ static void* find_wtree(wtree* self, const char* str) {
 }
 
 static void* vwalk(int v, wtree* self, const char* str){
-	int curr = v;
-	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*(str++))]));
-	return self->terminate[curr];
+	while (*str && self->tree[v][cast_char_to_wtree_edge(*str)]){
+		v = self->tree[v][cast_char_to_wtree_edge(*str)];
+		str++;
+	};
+	return self->terminate[v];
 }
 
 static void* walk(wtree* self, const char* str) {
@@ -330,10 +333,12 @@ static void* walk(wtree* self, const char* str) {
 }
 
 static void* vwalk_path(int v, wtree* self, const char* str){
-	int curr = v;
 	string* path = get_string();
-	while (*str && (curr = self->tree[curr][cast_char_to_wtree_edge(*(str++))]))
-		path->add(path, self->chars[curr]);
+	while (*str && self->tree[v][cast_char_to_wtree_edge(*str)]) {
+		v = self->tree[v][cast_char_to_wtree_edge(*str)];
+		path->add(path, self->chars[v]);
+		str++;
+	}
 	return path->get_chars_and_terminate(path);
 }
 

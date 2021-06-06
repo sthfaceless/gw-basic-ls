@@ -3,7 +3,8 @@ project(gw_basic_server C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_definitions(-DMY_DEBUG -DHAVE_CONFIG_H)
+add_definitions(-DMY_DEBUG)
+add_definitions(-DHAVE_CONFIG_H)
 add_definitions(-DLINUX)
 #add_definitions(-DWINDOWS)
 add_executable(gw_basic_server server/src/main.c
